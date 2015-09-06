@@ -1,5 +1,5 @@
-// Transformations v.02
-// (C) @oblomobka - 2015.04
+// Transformations v.03
+// (C) @oblomobka - 2015.09
 // GPL3
 
 // Transforma una forma en un sector de esa forma según un ángulo dado.

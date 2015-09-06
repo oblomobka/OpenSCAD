@@ -1,13 +1,13 @@
-// Solids v.02
-// (C) @oblomobka - 2015.08
+// Solids v.03
+// (C) @oblomobka - 2015.09
 // GPL licene
 
-include <constants_oblomobka.scad>
-include <functions_oblomobka.scad>
-include <functions_ext.scad>
+include <oblomobka/constants.scad>
+include <oblomobka/functions_ext.scad>
+include <oblomobka/functions.scad>
 
-use <transformations_oblomobka.scad>
-use <shapes_oblomobka.scad>
+use <oblomobka/transformations.scad>
+use <oblomobka/shapes.scad>
 
 
 // PRISMAS Y CONOS
