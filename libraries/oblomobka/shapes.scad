@@ -2,9 +2,9 @@
 // (C) @oblomobka - 2015.09
 // GPL3
 
-include <oblomobka/constants.scad>
-include <oblomobka/functions_ext.scad>
-include <oblomobka/functions.scad>
+include <constants.scad>
+include <functions_ext.scad>
+include <functions.scad>
 
 // Definición de un trapecio isosceles
 module trapezium (	p1=20,		// longitud de una de las líneas paralelas del trapecio

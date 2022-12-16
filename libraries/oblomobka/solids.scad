@@ -2,12 +2,12 @@
 // (C) @oblomobka - 2015.09
 // GPL licene
 
-include <oblomobka/constants.scad>
-include <oblomobka/functions_ext.scad>
-include <oblomobka/functions.scad>
+include <constants.scad>
+include <functions_ext.scad>
+include <functions.scad>
 
-use <oblomobka/transformations.scad>
-use <oblomobka/shapes.scad>
+use <transformations.scad>
+use <shapes.scad>
 
 
 // PRISMAS Y CONOS

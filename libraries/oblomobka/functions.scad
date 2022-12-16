@@ -2,7 +2,7 @@
 // (C) @oblomobka - 2015.11
 // GPL3
 
-include <oblomobka/constants.scad>
+include <constants.scad>
 
 // da el diámetro interior del cono(d1,d2,h) a una altura interior(hi) conocida
 function di_cone(d1,d2,h,hi)=d2+(d1-d2)*(1-hi/h);

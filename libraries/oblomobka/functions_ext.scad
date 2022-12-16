@@ -1,6 +1,6 @@
 // Funciones sacadas de otras librerías y de diferentes autores
 
-include <oblomobka/constants.scad>
+include <constants.scad>
 
 /* A circular helix of radius a and pitch 2πb is described by the following parametrisation:
 x(t) = a*cos(t),
