@@ -1,20 +1,27 @@
 // PlatonicSolids v.01
 // (C) @oblomobka - 2022.12
 // GPL license
-// https://en.wikipedia.org/wiki/Regular_dodecahedron
 
 /* here is defined the Golden ratio -> phi 
-  ----- phi=(1+sqrt(5))/2 = 1,618 -----
-*/
-include <../general/constants.scad> 
+  ----- phi=(1+sqrt(5))/2 = 1,618 -----*/
+include <../general/constants.scad>
 
+// Customizer Variables
+// Edge Dodecahedron
+edgeD=10; //[10:100]
+
+// Dodecahedron Variables
+diAngleDodecahedron = atan(1/phi); // dihedral angle of Dodecahedron = 116,56505...
+rCirDodecahedron = sqrt(3)*phi/2; // radius of a circumscribed sphere for edge = 1
+rInsDodecahedron = phi^2/(2*sqrt(3-phi)); // radius of a inscribed sphere for edge = 1
+rMidDodecahedron = phi^2/2; // Midradius, which touches the middle of each edge
 module Dodecahedron(edge=20){
+    
     diagonal=edge*phi; // x depicts the side of cube inscrit in the dodecahedron, that is the lenght of the diagonal of regular pentagon
     pCube = diagonal/2; // to depicts the coordinates of cube inscrit in a pentagon center in (0,0,0) - 8 vertices
     // longside : shortSide depicts the 3 rectangles to complete the 20 vertices of dodecahedron apart of the cube
     longSide = (edge*phi^2)/2;
     shortSide = edge/2;
-    
     
     Dpoints=[[-pCube,-pCube,-pCube],[-pCube,pCube,-pCube],[pCube,pCube,-pCube],[pCube,-pCube,-pCube],
             [-pCube,-pCube,pCube],[-pCube,pCube,pCube],[pCube,pCube,pCube],[pCube,-pCube,pCube],
@@ -34,6 +41,9 @@ module Cube(edge=40){
     Cfaces=[[0,1,2,3],[0,4,5,1],[0,3,7,4],[2,1,5,6],[3,2,6,7],[7,6,5,4]];
     polyhedron(Cpoints,Cfaces);
 }
-    
-Dodecahedron(edge=22);
+
+// Dodecahedron stand on xy plane centered on (0,0)
+translate([0,0,edgeD*rInsDodecahedron])
+    rotate([diAngleDodecahedron, 0, 0])
+        Dodecahedron(edge=edgeD);
 //Cube(side=20);
