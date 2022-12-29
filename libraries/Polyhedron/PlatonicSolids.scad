@@ -7,18 +7,17 @@
 include <../general/constants.scad>
 
 // Customizer Variables
-// Edge Dodecahedron
+// Edge Dodecahedron (distande between faces is aprox= edge*2,227)
 Edge=10; //[10:100]
 // Position: Center of the solid or stand over a face
 Center = "Center"; //["Center", "Face"]
 
-
 module Dodecahedron(edge=20, center="Face"){
     // Constants
     diAngleDodecahedron = atan(1/phi); // dihedral angle of Dodecahedron = 116,56505...
-    rCirDodecahedron = sqrt(3)*phi/2; // radius of a circumscribed sphere for edge = 1
-    rInsDodecahedron = phi^2/(2*sqrt(3-phi)); // radius of a inscribed sphere for edge = 1
-    rMidDodecahedron = phi^2/2; // Midradius, which touches the middle of each edge
+    rCirDodecahedron = sqrt(3)*phi/2; // radius of a circumscribed sphere for edge = 1 / =1,401...
+    rInsDodecahedron = phi^2/(2*sqrt(3-phi)); // radius of a inscribed sphere for edge = 1 / =1,1135...
+    rMidDodecahedron = phi^2/2; // Midradius, which touches the middle of each edge / =1,309...
     
     // Variables
     diagonal=edge*phi; // x depicts the side of cube inscrit in the dodecahedron, that is the lenght of the diagonal of regular pentagon
