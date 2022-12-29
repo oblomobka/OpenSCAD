@@ -8,21 +8,26 @@ include <../general/constants.scad>
 
 // Customizer Variables
 // Edge Dodecahedron
-edgeD=10; //[10:100]
+Edge=10; //[10:100]
+// Position: Center of the solid or stand over a face
+Center = "Center"; //["Center", "Face"]
 
-// Dodecahedron Variables
-diAngleDodecahedron = atan(1/phi); // dihedral angle of Dodecahedron = 116,56505...
-rCirDodecahedron = sqrt(3)*phi/2; // radius of a circumscribed sphere for edge = 1
-rInsDodecahedron = phi^2/(2*sqrt(3-phi)); // radius of a inscribed sphere for edge = 1
-rMidDodecahedron = phi^2/2; // Midradius, which touches the middle of each edge
-module Dodecahedron(edge=20){
+
+module Dodecahedron(edge=20, center="Face"){
+    // Constants
+    diAngleDodecahedron = atan(1/phi); // dihedral angle of Dodecahedron = 116,56505...
+    rCirDodecahedron = sqrt(3)*phi/2; // radius of a circumscribed sphere for edge = 1
+    rInsDodecahedron = phi^2/(2*sqrt(3-phi)); // radius of a inscribed sphere for edge = 1
+    rMidDodecahedron = phi^2/2; // Midradius, which touches the middle of each edge
     
+    // Variables
     diagonal=edge*phi; // x depicts the side of cube inscrit in the dodecahedron, that is the lenght of the diagonal of regular pentagon
     pCube = diagonal/2; // to depicts the coordinates of cube inscrit in a pentagon center in (0,0,0) - 8 vertices
     // longside : shortSide depicts the 3 rectangles to complete the 20 vertices of dodecahedron apart of the cube
     longSide = (edge*phi^2)/2;
     shortSide = edge/2;
     
+    // Definition of points and faces
     Dpoints=[[-pCube,-pCube,-pCube],[-pCube,pCube,-pCube],[pCube,pCube,-pCube],[pCube,-pCube,-pCube],
             [-pCube,-pCube,pCube],[-pCube,pCube,pCube],[pCube,pCube,pCube],[pCube,-pCube,pCube],
             [0,-longSide,-shortSide],[0,-longSide,shortSide],[0,longSide,-shortSide],[0,longSide,shortSide],
@@ -31,7 +36,15 @@ module Dodecahedron(edge=20){
     Dfaces=[[0,8,3,13,12],[2,10,1,12,13],[2,13,3,18,19],[1,12,0,16,17],
            [0,16,4,9,8],[7,18,3,8,9],[2,19,6,11,10],[5,17,1,10,11],
            [7,9,4,14,15],[5,11,6,15,14],[5,14,4,16,17],[7,15,6,19,18]];
-    polyhedron(Dpoints,Dfaces);  
+    
+    // Dodecahedron stands on xy plane centered on (0,0)
+    if(center=="Face"){
+        translate([0,0,edge*rInsDodecahedron])
+            rotate([diAngleDodecahedron, 0, 0])
+                polyhedron(Dpoints,Dfaces);}
+    else if(center=="Center") {
+        rotate([diAngleDodecahedron, 0, 0])
+            polyhedron(Dpoints,Dfaces);} 
 }
 
 module Cube(edge=40){
@@ -42,8 +55,5 @@ module Cube(edge=40){
     polyhedron(Cpoints,Cfaces);
 }
 
-// Dodecahedron stand on xy plane centered on (0,0)
-translate([0,0,edgeD*rInsDodecahedron])
-    rotate([diAngleDodecahedron, 0, 0])
-        Dodecahedron(edge=edgeD);
+Dodecahedron(edge=Edge, center=Center);
 //Cube(side=20);
