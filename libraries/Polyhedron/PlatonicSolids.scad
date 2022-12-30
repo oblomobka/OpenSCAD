@@ -2,10 +2,6 @@
 // (C) @oblomobka - 2022.12
 // GPL license
 
-/* here is defined the Golden ratio -> phi 
-  ----- phi=(1+sqrt(5))/2 = 1,618 -----*/
-include <../general/constants.scad>
-
 // Customizer Variables
 // Edge Dodecahedron (distande between faces is aprox= edge*2,227)
 Edge=10; //[10:100]
@@ -14,6 +10,7 @@ Center = "Center"; //["Center", "Face"]
 
 module Dodecahedron(edge=20, center="Face"){
     // Constants
+    phi=(1+sqrt(5))/2 // Golden ratio = 1,618...
     diAngleDodecahedron = atan(1/phi); // dihedral angle of Dodecahedron = 116,56505...
     rCirDodecahedron = sqrt(3)*phi/2; // radius of a circumscribed sphere for edge = 1 / =1,401...
     rInsDodecahedron = phi^2/(2*sqrt(3-phi)); // radius of a inscribed sphere for edge = 1 / =1,1135...
