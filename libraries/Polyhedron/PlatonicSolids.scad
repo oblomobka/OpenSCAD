@@ -3,12 +3,15 @@
 // GPL license
 
 // Customizer Variables
-// Edge Dodecahedron (distande between faces is aprox= edge*2,227)
-Edge=10; //[10:100]
+// Edge Dodecahedron (distance between faces is aprox= edge*2,227)
+EdgeDodecahedron=10; //[10:100]
+// Edge Cube (distance between faces is = edge)
+EdgeCube=10; //[10:100]
 // Position: Center of the solid or stand over a face
-Center = "Center"; //["Center", "Face"]
+Position = "Center"; //["Center", "Face"]
 
-module Dodecahedron(edge=20, center="Face"){
+module Dodecahedron(edge=20, position="Face"){
+    
     // Constants
     phi=(1+sqrt(5))/2; // Golden ratio = 1,618...
     diAngleDodecahedron = atan(1/phi); // dihedral angle of Dodecahedron = 116,56505...
@@ -33,23 +36,33 @@ module Dodecahedron(edge=20, center="Face"){
            [0,16,4,9,8],[7,18,3,8,9],[2,19,6,11,10],[5,17,1,10,11],
            [7,9,4,14,15],[5,11,6,15,14],[5,14,4,16,17],[7,15,6,19,18]];
     
-    // Dodecahedron stands on xy plane centered on (0,0)
-    if(center=="Face"){
+    // Dodecahedron stands on xy plane centered on (0,0) or centered on (0,0,0)
+    if(position=="Face"){
         translate([0,0,edge*rInsDodecahedron])
             rotate([diAngleDodecahedron, 0, 0])
                 polyhedron(Dpoints,Dfaces);}
-    else if(center=="Center") {
-        rotate([diAngleDodecahedron, 0, 0])
-            polyhedron(Dpoints,Dfaces);} 
+    else if(position=="Center") {
+        polyhedron(Dpoints,Dfaces);} 
 }
 
-module Cube(edge=40){
+module Cube(edge=40, position="Face"){
+    
+    // Variables
     x=edge/2;
+    
+    // Definition of points and faces
     Cpoints=[[x, x, x],[x, -x, x],[-x, -x, x],[-x, x, x],
              [x, x, -x],[x, -x, -x],[-x, -x, -x],[-x, x, -x]];
     Cfaces=[[0,1,2,3],[0,4,5,1],[0,3,7,4],[2,1,5,6],[3,2,6,7],[7,6,5,4]];
-    polyhedron(Cpoints,Cfaces);
+    
+    // Cube stands on xy plane centered on (0,0) or centered on (0,0,0)
+    if(position=="Face"){
+        translate([0,0,x])
+            polyhedron(Cpoints,Cfaces);}
+    else if(position=="Center") {
+        polyhedron(Cpoints,Cfaces);} 
 }
 
-Dodecahedron(edge=Edge, center=Center);
-//Cube(side=20);
+Dodecahedron(edge=EdgeDodecahedron, position=Position);
+translate([70,0,0])
+    Cube(edge=EdgeCube, position=Position);
