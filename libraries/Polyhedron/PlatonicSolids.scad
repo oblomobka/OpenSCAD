@@ -1,20 +1,74 @@
 // PlatonicSolids v.01
-// (C) @oblomobka - 2022.12
+// (C) @oblomobka - 2023.01
 // GPL license
 
 // Customizer Variables
-// Edge Dodecahedron (distance between faces is aprox= edge*2,227)
-EdgeDodecahedron=10; //[10:100]
-// Edge Cube (distance between faces is = edge)
-EdgeCube=10; //[10:100]
-// Position: Center of the solid or stand over a face
+// Edge of Tetrahedron (h of pyramid for edge = 1 / = 0,816...)
+TetrahedronEdge=30; //[10:100]
+// Edge of Cube (distance between faces (h) is = edge)
+CubeEdge=40; //[10:100]
+// Edge of Dodecahedron (distance between faces (h)is aprox= edge*2,227)
+DodecahedronEdge=40; //[10:100]
+// Center of the solid or stand over a face
 Position = "Center"; //["Center", "Face"]
+// Distance between solids in the rendering
+Matrix = 70; //[50:200]
+
+/* **MODULES** */
+module Tetrahedron(edge=20, position="Face"){
+    
+    // Constants
+    diAngleTetrahedron = acos(1/3); // dihedral angle of tetrahedron = 70.529
+    rCirTetrahedron = sqrt(6)/4; // radius of a circumscribed sphere for edge = 1 / = 0,612...
+    rInsTetrahedron = 1/sqrt(24); // radius of a inscribed sphere for edge = 1 / = 0,204
+    rMidTetrahedron = 1/sqrt(8); // Midradius, which touches the middle of each edge / =354...
+    hTetrahedron = sqrt(6)/3;
+    
+    // Variables
+    x=edge/2;
+    
+    // Definition of points and faces
+    Tpoints=[[x, 0, -x/sqrt(2)],[-x, 0, -x/sqrt(2)],[0, x, x/sqrt(2)],[0, -x, x/sqrt(2)]];
+    Tfaces=[[0,2,3],[0,3,1],[3,2,1],[2,0,1]];
+    
+    // Tetrahedron stands on xy plane centered on (0,0) or centered on (0,0,0)
+    if(position=="Face"){
+        translate([0,0,edge*(hTetrahedron-rCirTetrahedron)])
+            rotate([90-diAngleTetrahedron/2, 0, 0])
+                polyhedron(Tpoints,Tfaces);}
+    else if(position=="Center") {
+        polyhedron(Tpoints,Tfaces);} 
+}
+
+module Cube(edge=20, position="Face"){
+    
+    // Constants
+    diAngleCube = 90; // dihedral angle of cube
+    rCirCube = sqrt(3)/2; // radius of a circumscribed sphere for edge = 1 / = 1,061...
+    rInsCube = 1/2; // radius of a inscribed sphere for edge = 1 / = 0,5
+    rMidCube = 1/sqrt(2); // Midradius, which touches the middle of each edge / =0,707...
+    
+    // Variables
+    x=edge/2;
+    
+    // Definition of points and faces
+    Cpoints=[[x, x, x],[x, -x, x],[-x, -x, x],[-x, x, x],
+             [x, x, -x],[x, -x, -x],[-x, -x, -x],[-x, x, -x]];
+    Cfaces=[[0,1,2,3],[0,4,5,1],[0,3,7,4],[2,1,5,6],[3,2,6,7],[7,6,5,4]];
+    
+    // Cube stands on xy plane centered on (0,0) or centered on (0,0,0)
+    if(position=="Face"){
+        translate([0,0,x])
+            polyhedron(Cpoints,Cfaces);}
+    else if(position=="Center") {
+        polyhedron(Cpoints,Cfaces);} 
+}
 
 module Dodecahedron(edge=20, position="Face"){
     
     // Constants
     phi=(1+sqrt(5))/2; // Golden ratio = 1,618...
-    diAngleDodecahedron = atan(1/phi); // dihedral angle of Dodecahedron = 116,56505...
+    diAngleDodecahedron = acos (-1/sqrt(5))/*atan(1/phi)*/; // dihedral angle of Dodecahedron = 116,56505...
     rCirDodecahedron = sqrt(3)*phi/2; // radius of a circumscribed sphere for edge = 1 / =1,401...
     rInsDodecahedron = phi^2/(2*sqrt(3-phi)); // radius of a inscribed sphere for edge = 1 / =1,1135...
     rMidDodecahedron = phi^2/2; // Midradius, which touches the middle of each edge / =1,309...
@@ -39,30 +93,15 @@ module Dodecahedron(edge=20, position="Face"){
     // Dodecahedron stands on xy plane centered on (0,0) or centered on (0,0,0)
     if(position=="Face"){
         translate([0,0,edge*rInsDodecahedron])
-            rotate([diAngleDodecahedron, 0, 0])
+            rotate([90-diAngleDodecahedron/2, 0, 0])
                 polyhedron(Dpoints,Dfaces);}
     else if(position=="Center") {
         polyhedron(Dpoints,Dfaces);} 
 }
 
-module Cube(edge=40, position="Face"){
-    
-    // Variables
-    x=edge/2;
-    
-    // Definition of points and faces
-    Cpoints=[[x, x, x],[x, -x, x],[-x, -x, x],[-x, x, x],
-             [x, x, -x],[x, -x, -x],[-x, -x, -x],[-x, x, -x]];
-    Cfaces=[[0,1,2,3],[0,4,5,1],[0,3,7,4],[2,1,5,6],[3,2,6,7],[7,6,5,4]];
-    
-    // Cube stands on xy plane centered on (0,0) or centered on (0,0,0)
-    if(position=="Face"){
-        translate([0,0,x])
-            polyhedron(Cpoints,Cfaces);}
-    else if(position=="Center") {
-        polyhedron(Cpoints,Cfaces);} 
-}
-
-Dodecahedron(edge=EdgeDodecahedron, position=Position);
-translate([70,0,0])
-    Cube(edge=EdgeCube, position=Position);
+/* **RENDERING OF SOLIDS** */ 
+Dodecahedron(edge=DodecahedronEdge, position=Position);
+translate([Matrix,0,0])
+    Cube(edge=CubeEdge, position=Position);
+translate([Matrix*2,0,0])
+    Tetrahedron(edge=TetrahedronEdge, position=Position);
