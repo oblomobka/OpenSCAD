@@ -2,11 +2,13 @@
 // (C) @oblomobka - 2023.01
 // GPL license
 
-// Customizer Variables
+/* **CUSTOMIZER VARIABLES** */
 // Edge of Tetrahedron (h of pyramid for edge = 1 / = 0,816...)
 TetrahedronEdge=30; //[10:100]
 // Edge of Cube (distance between faces (h) is = edge)
 CubeEdge=40; //[10:100]
+// Edge of Octahedron (distance between faces (h) is = edge)
+OctahedronEdge=40; //[10:100]
 // Edge of Dodecahedron (distance between faces (h)is aprox= edge*2,227)
 DodecahedronEdge=40; //[10:100]
 // Center of the solid or stand over a face
@@ -15,8 +17,7 @@ Position = "Center"; //["Center", "Face"]
 Matrix = 70; //[50:200]
 
 /* **MODULES** */
-module Tetrahedron(edge=20, position="Face"){
-    
+module Tetrahedron(edge=20, position="Face"){ 
     // Constants
     diAngleTetrahedron = acos(1/3); // dihedral angle of tetrahedron = 70.529
     rCirTetrahedron = sqrt(6)/4; // radius of a circumscribed sphere for edge = 1 / = 0,612...
@@ -40,8 +41,32 @@ module Tetrahedron(edge=20, position="Face"){
         polyhedron(Tpoints,Tfaces);} 
 }
 
-module Cube(edge=20, position="Face"){
+module Octahedron(edge=20, position="Face"){ 
+    // Constants
+    diAngleOctahedron = acos(-1/3); // dihedral angle of octahedron = 109,471
+    rCirOctahedron = 1/sqrt(2); // radius of a circumscribed sphere for edge = 1 / = 0,707..
+    rInsOctahedron = sqrt(6)/6; // radius of a inscribed sphere for edge = 1 / = 0,408
+    rMidOctahedron = 1/2; // Midradius, which touches the middle of each edge / =0,5
     
+    // Variables
+    x=edge/sqrt(2);
+    
+    // Definition of points and faces
+    Opoints=[[x,0,0],[-x,0,0],[0,x,0],[0,-x,0],[0,0,x],[0,0,-x]];
+    Ofaces=[[0,4,3],[3,4,1],[1,4,2],[2,4,0],
+            [5,0,3],[2,0,5],[1,2,5],[3,1,5]];
+    
+    // Tetrahedron stands on xy plane centered on (0,0) or centered on (0,0,0)
+    if(position=="Face"){
+        translate([0,0,edge*rMidOctahedron]) // *******Corregir*****
+            rotate([-diAngleOctahedron/2, 0, 0])    
+                rotate([0, 0, 45])
+                    polyhedron(Opoints,Ofaces);}
+    else if(position=="Center") {
+        polyhedron(Opoints,Ofaces);} 
+}
+
+module Cube(edge=20, position="Face"){
     // Constants
     diAngleCube = 90; // dihedral angle of cube
     rCirCube = sqrt(3)/2; // radius of a circumscribed sphere for edge = 1 / = 1,061...
@@ -64,11 +89,10 @@ module Cube(edge=20, position="Face"){
         polyhedron(Cpoints,Cfaces);} 
 }
 
-module Dodecahedron(edge=20, position="Face"){
-    
+module Dodecahedron(edge=20, position="Face"){ 
     // Constants
-    phi=(1+sqrt(5))/2; // Golden ratio = 1,618...
-    diAngleDodecahedron = acos (-1/sqrt(5))/*atan(1/phi)*/; // dihedral angle of Dodecahedron = 116,56505...
+    phi = (1+sqrt(5))/2; // Golden ratio = 1,618...
+    diAngleDodecahedron = acos(-1/sqrt(5))/*atan(1/phi)*/; // dihedral angle of Dodecahedron = 116,56505...
     rCirDodecahedron = sqrt(3)*phi/2; // radius of a circumscribed sphere for edge = 1 / =1,401...
     rInsDodecahedron = phi^2/(2*sqrt(3-phi)); // radius of a inscribed sphere for edge = 1 / =1,1135...
     rMidDodecahedron = phi^2/2; // Midradius, which touches the middle of each edge / =1,309...
@@ -105,3 +129,5 @@ translate([Matrix,0,0])
     Cube(edge=CubeEdge, position=Position);
 translate([Matrix*2,0,0])
     Tetrahedron(edge=TetrahedronEdge, position=Position);
+translate([Matrix*3,0,0])
+    Octahedron(edge=OctahedronEdge, position=Position);
