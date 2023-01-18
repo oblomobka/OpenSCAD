@@ -165,4 +165,4 @@ translate([Matrix,0,0])
 translate([Matrix*2,0,0])
     Octahedron(edge=OctahedronEdge, position=Position);
 translate([Matrix*3,0,0])
-    Octahedron(edge=OctahedronEdge, position=Position);    Tetrahedron(edge=TetrahedronEdge, position=Position);    
+    Tetrahedron(edge=TetrahedronEdge, position=Position);    
