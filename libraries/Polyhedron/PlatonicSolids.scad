@@ -1,18 +1,26 @@
 // PlatonicSolids v.01
 // (C) @oblomobka - 2023.01
 // GPL license
+/*  LIST OF PLATONIC SOLIDS
+    -----------------------                        
+    - Tetrahedron
+    - Octahedron
+    - Cube
+    - Dodecahedron
+    - Icosahedron
+*/
 
 /* **CUSTOMIZER VARIABLES** */
 // Edge of Tetrahedron (h of pyramid for edge = 1 / = 0,816...)
-TetrahedronEdge=48; //[10:100]
+Tetrahedron_Edge=48; //[10:100]
 // Edge of Cube (distance between faces (h) is = edge)
-CubeEdge=40; //[10:100]
+Cube_Edge=40; //[10:100]
 // Edge of Octahedron (distance between faces (h)is aprox= edge*0,816)
-OctahedronEdge=48; //[10:100]
+Octahedron_Edge=48; //[10:100]
 // Edge of Dodecahedron (distance between faces (h)is aprox= edge*2,227)
-DodecahedronEdge=18; //[10:100]
+Dodecahedron_Edge=18; //[10:100]
 // Edge of Icosahedro (distance between faces (h)is aprox= edge*)
-IcosahedronEdge=27; //[10:100]
+Icosahedron_Edge=27; //[10:100]
 // Center of the solid or stand over a face
 Position = "Face"; //["Center", "Face"]
 // Distance between solids in the rendering
@@ -157,12 +165,12 @@ module Icosahedron(edge=20, position="Face"){
 
 /* **RENDERING OF SOLIDS** */ 
 translate([-1*Matrix,0,0])
-    Icosahedron(edge=IcosahedronEdge, position=Position);
+    Icosahedron(edge=Icosahedron_Edge, position=Position);
 translate([0,0,0])
-    Dodecahedron(edge=DodecahedronEdge, position=Position);
+    Dodecahedron(edge=Dodecahedron_Edge, position=Position);
 translate([Matrix,0,0])
-    Cube(edge=CubeEdge, position=Position);
+    Cube(edge=Cube_Edge, position=Position);
 translate([Matrix*2,0,0])
-    Octahedron(edge=OctahedronEdge, position=Position);
+    Octahedron(edge=Octahedron_Edge, position=Position);
 translate([Matrix*3,0,0])
-    Tetrahedron(edge=TetrahedronEdge, position=Position);  
+    Tetrahedron(edge=Tetrahedron_Edge, position=Position);  
