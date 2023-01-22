@@ -4,17 +4,17 @@
 
 /* **CUSTOMIZER VARIABLES** */
 // Edge of Tetrahedron (h of pyramid for edge = 1 / = 0,816...)
-TetrahedronEdge=20; //[10:100]
+TetrahedronEdge=48; //[10:100]
 // Edge of Cube (distance between faces (h) is = edge)
 CubeEdge=40; //[10:100]
 // Edge of Octahedron (distance between faces (h)is aprox= edge*0,816)
-OctahedronEdge=40; //[10:100]
+OctahedronEdge=48; //[10:100]
 // Edge of Dodecahedron (distance between faces (h)is aprox= edge*2,227)
-DodecahedronEdge=20; //[10:100]
+DodecahedronEdge=18; //[10:100]
 // Edge of Icosahedro (distance between faces (h)is aprox= edge*)
-IcosahedronEdge=25; //[10:100]
+IcosahedronEdge=27; //[10:100]
 // Center of the solid or stand over a face
-Position = "Center"; //["Center", "Face"]
+Position = "Face"; //["Center", "Face"]
 // Distance between solids in the rendering
 Matrix = 70; //[50:200]
 
@@ -34,7 +34,7 @@ module Tetrahedron(edge=20, position="Face"){
     Tpoints=[[x, 0, -x/sqrt(2)],[-x, 0, -x/sqrt(2)],[0, x, x/sqrt(2)],[0, -x, x/sqrt(2)]];
     Tfaces=[[0,2,3],[0,3,1],[3,2,1],[2,0,1]];
     
-    // Tetrahedron stands on xy plane centered on (0,0) or centered on (0,0,0)
+    // Tetrahedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
         translate([0,0,edge*(hTetrahedron-rCirTetrahedron)])
             rotate([90-diAngleTetrahedron/2, 0, 0])
@@ -58,7 +58,7 @@ module Octahedron(edge=20, position="Face"){
     Ofaces=[[0,4,3],[3,4,1],[1,4,2],[2,4,0],
             [5,0,3],[2,0,5],[1,2,5],[3,1,5]];
     
-    // Octahedron stands on xy plane centered on (0,0) or centered on (0,0,0)
+    // Octahedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
         translate([0,0,edge*rInsOctahedron])
             rotate([-diAngleOctahedron/2, 0, 0])    
@@ -83,7 +83,7 @@ module Cube(edge=20, position="Face"){
              [x, x, -x],[x, -x, -x],[-x, -x, -x],[-x, x, -x]];
     Cfaces=[[0,1,2,3],[0,4,5,1],[0,3,7,4],[2,1,5,6],[3,2,6,7],[7,6,5,4]];
     
-    // Cube stands on xy plane centered on (0,0) or centered on (0,0,0)
+    // Cube stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
         translate([0,0,x])
             polyhedron(Cpoints,Cfaces);}
@@ -116,7 +116,7 @@ module Dodecahedron(edge=20, position="Face"){
            [0,16,4,9,8],[7,18,3,8,9],[2,19,6,11,10],[5,17,1,10,11],
            [7,9,4,14,15],[5,11,6,15,14],[5,14,4,16,17],[7,15,6,19,18]];
     
-    // Dodecahedron stands on xy plane centered on (0,0) or centered on (0,0,0)
+    // Dodecahedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
         translate([0,0,edge*rInsDodecahedron])
             rotate([90-diAngleDodecahedron/2, 0, 0])
@@ -146,7 +146,7 @@ module Icosahedron(edge=20, position="Face"){
                 [1,10,5],[1,11,10],[1,4,11],[4,7,11],[4,8,7],
                 [7,8,3],[3,8,9],[3,9,6],[6,9,5],[6,5,10]];
     
-    // Icosahedron stands on xy plane centered on (0,0) or centered on (0,0,0)
+    // Icosahedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
         translate([0,0,edge*rInsIcosahedron])
             rotate([90-diAngleIcosahedron/2, 0, 0])
@@ -158,11 +158,11 @@ module Icosahedron(edge=20, position="Face"){
 /* **RENDERING OF SOLIDS** */ 
 translate([-1*Matrix,0,0])
     Icosahedron(edge=IcosahedronEdge, position=Position);
-translate([0*Matrix,0,0])
+translate([0,0,0])
     Dodecahedron(edge=DodecahedronEdge, position=Position);
 translate([Matrix,0,0])
     Cube(edge=CubeEdge, position=Position);
 translate([Matrix*2,0,0])
     Octahedron(edge=OctahedronEdge, position=Position);
 translate([Matrix*3,0,0])
-    Tetrahedron(edge=TetrahedronEdge, position=Position);    
+    Tetrahedron(edge=TetrahedronEdge, position=Position);  
