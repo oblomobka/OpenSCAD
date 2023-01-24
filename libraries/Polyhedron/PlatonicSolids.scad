@@ -12,19 +12,19 @@
 
 /* **CUSTOMIZER VARIABLES** */
 // Edge of Tetrahedron (h of pyramid for edge = 1 / = 0,816...)
-Tetrahedron_Edge=48; //[10:100]
+tetrahedron_Edge=48; //[10:100]
 // Edge of Cube (distance between faces (h) is = edge)
-Cube_Edge=40; //[10:100]
+cube_Edge=40; //[10:100]
 // Edge of Octahedron (distance between faces (h)is aprox= edge*0,816)
-Octahedron_Edge=48; //[10:100]
+octahedron_Edge=48; //[10:100]
 // Edge of Dodecahedron (distance between faces (h)is aprox= edge*2,227)
-Dodecahedron_Edge=18; //[10:100]
+dodecahedron_Edge=18; //[10:100]
 // Edge of Icosahedro (distance between faces (h)is aprox= edge*)
-Icosahedron_Edge=27; //[10:100]
+icosahedron_Edge=27; //[10:100]
 // Center of the solid or stand over a face
-Position = "Face"; //["Center", "Face"]
+position = "Face"; //["Center", "Face"]
 // Distance between solids in the rendering
-Matrix = 70; //[50:200]
+matrix = 70; //[50:200]
 
 /* **MODULES** */
 module Tetrahedron(edge=20, position="Face"){ 
@@ -164,13 +164,13 @@ module Icosahedron(edge=20, position="Face"){
 }
 
 /* **RENDERING OF SOLIDS** */ 
-translate([-1*Matrix,0,0])
-    Icosahedron(edge=Icosahedron_Edge, position=Position);
+translate([-1*matrix,0,0])
+    Icosahedron(edge=icosahedron_Edge, position=position);
 translate([0,0,0])
-    Dodecahedron(edge=Dodecahedron_Edge, position=Position);
-translate([Matrix,0,0])
-    Cube(edge=Cube_Edge, position=Position);
-translate([Matrix*2,0,0])
-    Octahedron(edge=Octahedron_Edge, position=Position);
-translate([Matrix*3,0,0])
-    Tetrahedron(edge=Tetrahedron_Edge, position=Position);  
+    Dodecahedron(edge=dodecahedron_Edge, position=position);
+translate([matrix,0,0])
+    Cube(edge=cube_Edge, position=position);
+translate([matrix*2,0,0])
+    Octahedron(edge=octahedron_Edge, position=position);
+translate([matrix*3,0,0])
+    Tetrahedron(edge=tetrahedron_Edge, position=position);  
