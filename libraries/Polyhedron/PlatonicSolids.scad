@@ -42,7 +42,7 @@ module Tetrahedron(edge=20, position="Face"){
     Tpoints=[[x, 0, -x/sqrt(2)],[-x, 0, -x/sqrt(2)],[0, x, x/sqrt(2)],[0, -x, x/sqrt(2)]];
     Tfaces=[[0,2,3],[0,3,1],[3,2,1],[2,0,1]];
     
-    // Tetrahedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
         translate([0,0,edge*(hTetrahedron-rCirTetrahedron)])
             rotate([90-diAngleTetrahedron/2, 0, 0])
@@ -66,7 +66,7 @@ module Octahedron(edge=20, position="Face"){
     Ofaces=[[0,4,3],[3,4,1],[1,4,2],[2,4,0],
             [5,0,3],[2,0,5],[1,2,5],[3,1,5]];
     
-    // Octahedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
         translate([0,0,edge*rInsOctahedron])
             rotate([-diAngleOctahedron/2, 0, 0])    
@@ -91,7 +91,7 @@ module Cube(edge=20, position="Face"){
              [x, x, -x],[x, -x, -x],[-x, -x, -x],[-x, x, -x]];
     Cfaces=[[0,1,2,3],[0,4,5,1],[0,3,7,4],[2,1,5,6],[3,2,6,7],[7,6,5,4]];
     
-    // Cube stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
         translate([0,0,x])
             polyhedron(Cpoints,Cfaces);}
@@ -124,7 +124,7 @@ module Dodecahedron(edge=20, position="Face"){
            [0,16,4,9,8],[7,18,3,8,9],[2,19,6,11,10],[5,17,1,10,11],
            [7,9,4,14,15],[5,11,6,15,14],[5,14,4,16,17],[7,15,6,19,18]];
     
-    // Dodecahedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
         translate([0,0,edge*rInsDodecahedron])
             rotate([90-diAngleDodecahedron/2, 0, 0])
@@ -154,7 +154,7 @@ module Icosahedron(edge=20, position="Face"){
                 [1,10,5],[1,11,10],[1,4,11],[4,7,11],[4,8,7],
                 [7,8,3],[3,8,9],[3,9,6],[6,9,5],[6,5,10]];
     
-    // Icosahedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
         translate([0,0,edge*rInsIcosahedron])
             rotate([90-diAngleIcosahedron/2, 0, 0])
