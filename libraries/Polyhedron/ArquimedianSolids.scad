@@ -9,7 +9,7 @@
     + Truncated Cube                tC
     + Truncated Octahedron          tO / bT
     + Rhombicuboctahedron           eC / aaC / aaaT
-    - Truncated Cuboctahedron       bC / taC
+    + Truncated Cuboctahedron       bC / taC
     - Snub Cube                     sC
     - Icosidodecahedron             aD
     - Truncated Dodecahedron        tD
@@ -30,6 +30,8 @@ truncatedCube_Edge=48; //[10:100]
 truncatedOctahedron_Edge=48; //[10:100]
 // Rhombicuboctahedron (h ****)
 rhombicuboctahedron_Edge=48; //[10:100]
+// TruncatedCuboctahedron (h ****)
+truncatedCuboctahedron_Edge=20; //[10:100]
 // Center of the solid or stand over a face
 position = "Face"; //["Center", "Face"]
 // Distance between solids in the rendering
@@ -65,7 +67,7 @@ module TruncatedTetrahedron(edge=20, position="Face"){ //tT (Conway notation)
 
 module Cuboctahedron(edge=20, position="Face"){ //aC / aaT (Conway notation)
     // Constants
-    //diAngle_aC = acos(1/3); // ****correct
+
     
     // Variables
     x=edge/sqrt(2);
@@ -90,7 +92,6 @@ module Cuboctahedron(edge=20, position="Face"){ //aC / aaT (Conway notation)
     
 module TruncatedCube(edge=20, position="Face"){ //tC 
     // Constants
-    //diAngle_aC = acos(1/3); // ****correct
     
     // Variables
     x=(edge+2*edge/sqrt(2))/2;
@@ -127,7 +128,6 @@ module TruncatedCube(edge=20, position="Face"){ //tC
     
 module TruncatedOctahedron(edge=20, position="Face"){ //tO / bT
     // Constants
-    //diAngle_aC = acos(1/3); // ****correct
     
     // Variables
     x=3*edge/sqrt(2);
@@ -157,7 +157,6 @@ module TruncatedOctahedron(edge=20, position="Face"){ //tO / bT
 
 module Rhombicuboctahedron(edge=20, position="Face"){ //eC / aaC / aaaT 
     // Constants
-    //diAngle_aC = acos(1/3); // ****correct
     
     // Variables
     x=(edge+2*edge/sqrt(2))/2;
@@ -191,6 +190,48 @@ module Rhombicuboctahedron(edge=20, position="Face"){ //eC / aaC / aaaT
             polyhedron(eCpoints,eCfaces);}
     }
     
+module TruncatedCuboctahedron(edge=20, position="Face"){ //bC / taC (Conway notation)
+    // Constants
+    
+    // Variables
+    x=edge/2+2*edge/sqrt(2);
+    b=edge/sqrt(2); //b represent the truncation value to obtain regular polygons. It operates on the vertex of the original polyhedron, the cuboctahedron in this case.
+    b2=edge/2;
+    
+    // Definition of points and faces
+    taCpoints=[ [x-b,x,b2],[x-b,x,-b2],[x,x-b,-b2],[x,x-b,b2], //+X+Y
+                [x-b,-x,b2],[x-b,-x,-b2],[x,-(x-b),-b2],[x,-(x-b),b2], //+X-Y
+                [-(x-b),-x,b2],[-(x-b),-x,-b2],[-x,-(x-b),-b2],[-x,-(x-b),b2], //-X-Y
+                [-(x-b),x,b2],[-(x-b),x,-b2],[-x,x-b,-b2],[-x,x-b,b2], //-X+Y
+    
+                [x-b,b2,x],[x-b,-b2,x],[x,-b2,x-b],[x,b2,x-b],  //+X+Z
+                [x-b,b2,-x],[x-b,-b2,-x],[x,-b2,-(x-b)],[x,b2,-(x-b)],  //+X-Z
+                [-(x-b),b2,-x],[-(x-b),-b2,-x],[-x,-b2,-(x-b)],[-x,b2,-(x-b)],  //-X-Z
+                [-(x-b),b2,x],[-(x-b),-b2,x],[-x,-b2,x-b],[-x,b2,x-b],  //-X+Z
+    
+                [b2,x-b,x],[-b2,x-b,x],[-b2,x,x-b],[b2,x,x-b],  //+Y+Z
+                [b2,x-b,-x],[-b2,x-b,-x],[-b2,x,-(x-b)],[b2,x,-(x-b)],  //+Y-Z
+                [b2,-(x-b),-x],[-b2,-(x-b),-x],[-b2,-x,-(x-b)],[b2,-x,-(x-b)],  //-Y-Z
+                [b2,-(x-b),x],[-b2,-(x-b),x],[-b2,-x,x-b],[b2,-x,x-b]   //-Y+Z
+                ];
+    taCfaces=[  [0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],             // Centrer of square in XY
+                [16,17,18,19],[20,21,22,23],[24,25,26,27],[28,29,30,31],   // Centrer of square in XZ
+                [32,33,34,35],[36,37,38,39],[40,41,42,43],[44,45,46,47],   // Centrer of square in YZ
+                [2,3,19,18,7,6,22,23],[34,35,0,1,39,38,13,12],
+                [15,14,27,26,10,11,30,31],[4,5,43,42,9,8,46,47],
+                [17,16,32,33,28,29,45,44],[21,20,36,37,24,25,41,40],
+                [3,0,35,32,16,19],[1,2,23,20,36,39],[4,7,18,17,44,47],[43,40,21,22,6,5],
+                [12,15,31,28,33,34],[8,11,30,29,45,46],[14,13,38,37,24,27],[25,26,10,9,42,41]
+                ];
+  
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    if(position=="Face"){
+        translate([0,0,x])
+            polyhedron(taCpoints,taCfaces);}
+    else if(position=="Center") {
+        polyhedron(taCpoints,taCfaces);}
+    }
+    
 /* **RENDERING OF SOLIDS** */
 TruncatedTetrahedron(edge=truncatedTetrahedron_Edge, position=position);
 translate([matrix,0,0])
@@ -201,4 +242,6 @@ translate([matrix*3,0,0])
     TruncatedOctahedron(edge=truncatedOctahedron_Edge, position=position);
 translate([matrix*4,0,0])
     Rhombicuboctahedron(edge=rhombicuboctahedron_Edge, position=position);
+translate([matrix*5,0,0])
+    TruncatedCuboctahedron(edge=truncatedCuboctahedron_Edge, position=position);
     
