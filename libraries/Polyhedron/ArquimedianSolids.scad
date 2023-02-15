@@ -11,7 +11,7 @@
     + Rhombicuboctahedron           eC / aaC / aaaT
     + Truncated Cuboctahedron       bC / taC
     - Snub Cube                     sC
-    - Icosidodecahedron             aD
+    + Icosidodecahedron             aD
     - Truncated Dodecahedron        tD
     - Truncated Icosahedron         tI
     - Rhombicosidodecahedron        eD / aaD
@@ -21,24 +21,26 @@
 
 /* **CUSTOMIZER VARIABLES** */
 // Edge of Truncated Tetrahedron (h ****)
-truncatedTetrahedron_Edge=48; //[10:100]
+truncatedTetrahedron_Edge=20; //[10:100]
 // Edge of Cuboctahedron (h ****)
-cuboctahedron_Edge=48; //[10:100]
+cuboctahedron_Edge=30; //[10:100]
 // Truncated Cube (h ****)
-truncatedCube_Edge=48; //[10:100]
+truncatedCube_Edge=20; //[10:100]
 // Truncated Octahedron (h ****)
-truncatedOctahedron_Edge=48; //[10:100]
+truncatedOctahedron_Edge=25; //[10:100]
 // Rhombicuboctahedron (h ****)
-rhombicuboctahedron_Edge=48; //[10:100]
+rhombicuboctahedron_Edge=25; //[10:100]
 // TruncatedCuboctahedron (h ****)
-truncatedCuboctahedron_Edge=20; //[10:100]
+truncatedCuboctahedron_Edge=15; //[10:100]
+// Icosidodecahedron (h ****)
+icosidodecahedron_Edge=20; //[10:100]
 // Center of the solid or stand over a face
 position = "Face"; //["Center", "Face"]
 // Distance between solids in the rendering
-matrix = 70; //[50:200]
+matrix = 100; //[50:200]
 
 /* **MODULES** */
-module TruncatedTetrahedron(edge=20, position="Face"){ //tT (Conway notation)
+module TruncatedTetrahedron(edge=20, position="Face"){ //tT
     // Constants
     diAngle_tT = acos(1/3); // dihedral angle between hexagonal faces of tT  = 70.529
     
@@ -65,7 +67,7 @@ module TruncatedTetrahedron(edge=20, position="Face"){ //tT (Conway notation)
         polyhedron(tTpoints,tTfaces);}
     }
 
-module Cuboctahedron(edge=20, position="Face"){ //aC / aaT (Conway notation)
+module Cuboctahedron(edge=20, position="Face"){ //aC / aaT
     // Constants
 
     
@@ -190,7 +192,7 @@ module Rhombicuboctahedron(edge=20, position="Face"){ //eC / aaC / aaaT
             polyhedron(eCpoints,eCfaces);}
     }
     
-module TruncatedCuboctahedron(edge=20, position="Face"){ //bC / taC (Conway notation)
+module TruncatedCuboctahedron(edge=20, position="Face"){ //bC / taC
     // Constants
     
     // Variables
@@ -231,6 +233,50 @@ module TruncatedCuboctahedron(edge=20, position="Face"){ //bC / taC (Conway nota
     else if(position=="Center") {
         polyhedron(taCpoints,taCfaces);}
     }
+
+
+module Icosidodecahedron(edge=20, position="Face"){ //aD
+    // Constants
+    phi = (1+sqrt(5))/2; // Golden ratio = 1,618...
+    angle_aD = asin(2*sqrt((5+sqrt(5))/10)/(1+sqrt(5))); // angle vertex to center pentagon
+    hPentagon = sqrt(phi^2-((5+sqrt(5))/10));
+    
+    // Variables
+    x=edge*phi;
+    b=edge/(2*phi);
+    b2=x/2;
+    
+    // Definition of points and faces
+    aDpoints=[  [x,0,0],[-x,0,0],[0,x,0],[0,-x,0],[0,0,x],[0,0,-x],  //0-5
+    
+                [x-b,b2,edge/2],[x-b,b2,-edge/2],[x-b,-b2,edge/2],[x-b,-b2,-edge/2], //+XY/6-9
+                [-(x-b),b2,edge/2],[-(x-b),b2,-edge/2],[-(x-b),-b2,edge/2],[-(x-b),-b2,-edge/2],//-XY/10-13
+    
+                [edge/2,x-b,b2],[-edge/2,x-b,b2],[edge/2,x-b,-b2],[-edge/2,x-b,-b2], //+YZ/14-17
+                [edge/2,-(x-b),b2],[-edge/2,-(x-b),b2],[edge/2,-(x-b),-b2],[-edge/2,-(x-b),-b2],//-YZ/18-21
+    
+                [b2,edge/2,x-b],[b2,-edge/2,x-b],[-b2,edge/2,x-b],[-b2,-edge/2,x-b], //+ZX/22-25
+                [b2,edge/2,-(x-b)],[b2,-edge/2,-(x-b)],[-b2,edge/2,-(x-b)],[-b2,-edge/2,-(x-b)],//-ZX/26-29
+                ];
+    
+    aDfaces=[   [0,7,6],[0,8,9],[1,10,11],[1,13,12],        //triangles touching X axis
+                [2,15,14],[2,16,17],[3,18,19],[3,21,20],    //triangles touching Y axis
+                [4,23,22],[4,24,25],[5,26,27],[5,29,28],    //triangles touching Z axis
+                [6,14,22],[8,23,18],[10,24,15],[12,19,25],  //triangles in octants + 
+                [7,26,16],[9,20,27],[11,17,28],[13,29,21],  //triangles in octants -
+                [0,6,22,23,8],[0,9,27,26,7],[1,12,25,24,10],[1,11,28,29,13],        //pentagons touching X axis
+                [2,14,6,7,16],[2,17,11,10,15],[3,20,9,8,18],[3,19,12,13,21],        //pentagons touching Y axis
+                [4,22,14,15,24],[4,25,19,18,23],[5,28,17,16,26],[5,29,21,20,27],    //pentagons touching Z axis
+                ];
+  
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    if(position=="Face"){
+        translate([0,0,(hPentagon*edge)])
+            rotate([0, 90-angle_aD, 0])
+                polyhedron(aDpoints,aDfaces);}
+    else if(position=="Center") {
+        polyhedron(aDpoints,aDfaces);}
+    }
     
 /* **RENDERING OF SOLIDS** */
 TruncatedTetrahedron(edge=truncatedTetrahedron_Edge, position=position);
@@ -244,4 +290,6 @@ translate([matrix*4,0,0])
     Rhombicuboctahedron(edge=rhombicuboctahedron_Edge, position=position);
 translate([matrix*5,0,0])
     TruncatedCuboctahedron(edge=truncatedCuboctahedron_Edge, position=position);
+translate([matrix*6,0,0])
+    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);
     
