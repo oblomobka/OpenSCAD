@@ -1,5 +1,5 @@
 // PlatonicSolids v.01
-// (C) @oblomobka - 2023.01
+// (C) @oblomobka - 2023.02
 // GPL license
 /*  LIST OF PLATONIC SOLIDS
     -----------------------                        
@@ -11,20 +11,12 @@
 */
 
 /* **CUSTOMIZER VARIABLES** */
-// Edge of Tetrahedron (h of pyramid for edge = 1 / = 0,816...)
-tetrahedron_Edge=48; //[10:100]
-// Edge of Cube (distance between faces (h) is = edge)
-cube_Edge=40; //[10:100]
-// Edge of Octahedron (distance between faces (h)is aprox= edge*0,816)
-octahedron_Edge=48; //[10:100]
-// Edge of Dodecahedron (distance between faces (h)is aprox= edge*2,227)
-dodecahedron_Edge=18; //[10:100]
-// Edge of Icosahedro (distance between faces (h)is aprox= edge*)
-icosahedron_Edge=27; //[10:100]
+// Type of Platonic Solid
+type = "Dodecahedron"; //["Tetrahedron", "Cube", "Octahedron", "Dodecahedron", "Icosahedron"]
+// Edge of the solid
+edge=40; //[10:100]
 // Center of the solid or stand over a face
 position = "Face"; //["Center", "Face"]
-// Distance between solids in the rendering
-matrix = 70; //[50:200]
 
 /* **MODULES** */
 module Tetrahedron(edge=20, position="Face"){ 
@@ -162,15 +154,22 @@ module Icosahedron(edge=20, position="Face"){
     else if(position=="Center") {
         polyhedron(Ipoints,Ifaces);} 
 }
-
+module PlatonicSolids (type="Dodecahedron", edge=20, position="Face"){
+    if(type=="Tetrahedron"||type=="T"){
+        Tetrahedron (edge, position);
+    }
+            if(type=="Cube"||type=="C") {
+                Cube (edge, position);
+            }
+                    if(type=="Octahedron"||type=="O") {
+                        Octahedron (edge, position);
+                    }
+                            if(type=="Dodecahedron"||type=="D") {
+                                Dodecahedron (edge, position);
+                            }
+                                    if(type=="Icosahedron"||type=="I") {
+                                        Icosahedron (edge, position);
+                                    }                   
+}
 /* **RENDERING OF SOLIDS** */ 
-translate([-1*matrix,0,0])
-    Icosahedron(edge=icosahedron_Edge, position=position);
-translate([0,0,0])
-    Dodecahedron(edge=dodecahedron_Edge, position=position);
-translate([matrix,0,0])
-    Cube(edge=cube_Edge, position=position);
-translate([matrix*2,0,0])
-    Octahedron(edge=octahedron_Edge, position=position);
-translate([matrix*3,0,0])
-    Tetrahedron(edge=tetrahedron_Edge, position=position);  
+PlatonicSolids(type, edge, position);
