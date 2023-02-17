@@ -13,10 +13,10 @@
 /* **CUSTOMIZER VARIABLES** */
 // Type of Platonic Solid
 type = "Dodecahedron"; //["Tetrahedron", "Cube", "Octahedron", "Dodecahedron", "Icosahedron"]
-// Edge of the solid
-edge=40; //[10:100]
-// Center of the solid or stand over a face
-position = "Face"; //["Center", "Face"]
+// Size of the solid
+size=40; //[10:100]
+// Parameter on which the solid is built
+accordingTo = "edge"; //["Edge", "height", "radioCircumscribed", "radioInscribed"]
 
 /* **MODULES** */
 module Tetrahedron(edge=20, position="Face"){ 
@@ -154,22 +154,91 @@ module Icosahedron(edge=20, position="Face"){
     else if(position=="Center") {
         polyhedron(Ipoints,Ifaces);} 
 }
-module PlatonicSolids (type="Dodecahedron", edge=20, position="Face"){
-    if(type=="Tetrahedron"||type=="T"){
-        Tetrahedron (edge, position);
+
+// This module is able to render any Platonic Solid, defined by its edge, height, radio of circumscribed sphere and radio of inscribed sphere
+module PlatonicSolids (type="Dodecahedron", size=20, accordingTo="edge"){
+    
+    phi = (1+sqrt(5))/2; // Golden ratio = 1,618...
+    
+    if(accordingTo=="edge"){
+        if(type=="Tetrahedron"||type=="T"){
+            Tetrahedron (size, position="Face");
+        }
+                if(type=="Cube"||type=="C") {
+                    Cube (size, position="Face");
+                }
+                        if(type=="Octahedron"||type=="O") {
+                            Octahedron (size, position="Face");
+                        }
+                                if(type=="Dodecahedron"||type=="D") {
+                                    Dodecahedron (size, position="Face");
+                                }
+                                        if(type=="Icosahedron"||type=="I") {
+                                            Icosahedron (size, position="Face");
+                                        }
     }
-            if(type=="Cube"||type=="C") {
-                Cube (edge, position);
-            }
-                    if(type=="Octahedron"||type=="O") {
-                        Octahedron (edge, position);
-                    }
-                            if(type=="Dodecahedron"||type=="D") {
-                                Dodecahedron (edge, position);
-                            }
-                                    if(type=="Icosahedron"||type=="I") {
-                                        Icosahedron (edge, position);
-                                    }                   
+        
+    if(accordingTo=="height"){
+                if(type=="Tetrahedron"||type=="T"){
+                    Tetrahedron (size/(sqrt(6)/3), position="Face");
+                }
+                        if(type=="Cube"||type=="C") {
+                            Cube (size/1, position="Face");
+                        }
+                                if(type=="Octahedron"||type=="O") {
+                                    Octahedron (size/(sqrt(6)/3), position="Face");
+                                }
+                                        if(type=="Dodecahedron"||type=="D") {
+                                            Dodecahedron (size/(phi^2/sqrt(3-phi)), position="Face");
+                                        }
+                                                if(type=="Icosahedron"||type=="I") {
+                                                    Icosahedron (size/(phi^2/sqrt(3)), position="Face");
+                                                }
+     }
+    if(accordingTo=="radioCircumscribed"){
+                if(type=="Tetrahedron"||type=="T"){
+                    Tetrahedron (size/(sqrt(6)/4), position="Center");
+                    color( "grey", 0.1 ) {sphere(size);}
+                }
+                        if(type=="Cube"||type=="C") {
+                            Cube (size/(sqrt(3)/2), position="Center");
+                            color( "grey", 0.1 ) {sphere(size);}
+                        }
+                                if(type=="Octahedron"||type=="O") {
+                                    Octahedron (size/(1/sqrt(2)), position="Center");
+                                    color( "grey", 0.1 ) {sphere(size);}
+                                }
+                                        if(type=="Dodecahedron"||type=="D") {
+                                            Dodecahedron (size/(sqrt(3)*phi/2), position="Center");
+                                            color( "grey", 0.1 ) {sphere(size);}
+                                        }
+                                                if(type=="Icosahedron"||type=="I") {
+                                                    Icosahedron (size/(sqrt(phi*sqrt(5))/2), position="Center");
+                                                    color( "grey", 0.1 ) {sphere(size);}
+                                                }
+    }
+    if(accordingTo=="radioInscribed"){
+                if(type=="Tetrahedron"||type=="T"){
+                    sphere(size);
+                    color( "orange", 0.4 ) {Tetrahedron (size/(1/sqrt(24)), position="Center");}                 
+                }
+                        if(type=="Cube"||type=="C") {
+                            sphere(size);
+                            color( "orange", 0.4 ) {Cube (size/(1/2), position="Center");}
+                        }
+                                if(type=="Octahedron"||type=="O") {
+                                    sphere(size);
+                                    color( "orange", 0.4 ) {Octahedron (size/(sqrt(6)/6), position="Center");}
+                                }
+                                        if(type=="Dodecahedron"||type=="D") {
+                                            sphere(size);
+                                            color( "orange", 0.4 ) {Dodecahedron (size/(phi^2/(2*sqrt(3-phi))), position="Center");}
+                                        }
+                                                if(type=="Icosahedron"||type=="I") {
+                                                    sphere(size);
+                                                    color( "orange", 0.4 ) {Icosahedron (size/(phi^2/(2*sqrt(3))), position="Center");}
+                                                }
+    }     
 }
 /* **RENDERING OF SOLIDS** */ 
-PlatonicSolids(type, edge, position);
+PlatonicSolids(type, size, accordingTo);
