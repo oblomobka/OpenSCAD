@@ -1,5 +1,5 @@
 // ArquimedianSolids v.01
-// (C) @oblomobka - 2023.01
+// (C) @oblomobka - 2023.03
 // GPL license
 /*  LIST OF ARQUIMEDIAN SOLIDS
     -------------------------------------------------
@@ -39,32 +39,36 @@ position = "Face"; //["Center", "Face"]
 // Distance between solids in the rendering
 matrix = 100; //[50:200]
 
-/* **MODULES** */
+/* **MODULES** */   
 module TruncatedTetrahedron(edge=20, position="Face"){ //tT
-    // Constants
-    diAngle_tT = acos(1/3); // dihedral angle between hexagonal faces of tT  = 70.529
+    // Invariants
+    diAngle66_tT = acos(1/3); // dihedral angle between hexagonal faces of tT  = 70.529
+    
+    rInsTruncatedTetrahedron = 3/sqrt(24); // radius of a inscribed sphere touching the hexagons - for edge = 1 -> radius = 0,612
     
     // Variables
-    x=edge/sqrt(8);
+    a=3*edge/(2*sqrt(2));   // Tetrahedron points
+    b=edge/sqrt(2);         // Truncate factor
     
     // Definition of points and faces
-    tTpoints=[  [3*x,x,x],[x,3*x,x],[x,x,3*x],
-                [-3*x,-x,x],[-x,-3*x,x],[-x,-x,3*x],
-                [-3*x,x,-x],[-x,3*x,-x],[-x,x,-3*x],
-                [3*x,-x,-x],[x,-3*x,-x],[x,-x,-3*x]
+    tTpoints=[  [a-b,a-b,a],[a, a-b, a-b],[a-b, a, a-b],                // +X +Y +Z
+                [-(a-b),-(a-b),a],[-a, -(a-b), a-b],[-(a-b), -a, a-b],  // -X -Y +Z
+                [a-b,-(a-b),-a],[a, -(a-b), -(a-b)],[a-b, -a, -(a-b)],  // +X -Y -Z
+                [-(a-b),a-b,-a],[-a, a-b, -(a-b)],[-(a-b), a, -(a-b)]   // -X +Y -Z              
                 ];
-    tTfaces=[   [0,2,5,4,10,9],[7,1,0,9,11,8],[4,3,6,8,11,10],[1,7,6,3,5,2],
-                [0,1,2],[3,4,5],[6,7,8],[9,10,11]
+    tTfaces=[  
+                [0,1,2],[3,4,5],[6,7,8],[9,10,11],
+                [1,0,3,5,8,7],[2,1,7,6,9,11],[0,2,11,10,4,3],[5,4,10,9,6,8]
                 ];
  
     // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
-    if(position=="Face"){
-        //translate([0,0,x*(hTetrahedron-rCirTetrahedron)]) 
-            rotate([90-diAngle_tT/2, 0, 0])
+    if(position=="Center") {
+        polyhedron(tTpoints,tTfaces);}
+    else if(position=="Face"){
+        translate([0,0,edge*rInsTruncatedTetrahedron]) 
+            rotate([90-diAngle66_tT/2, 0, 0])
                 rotate([0, 0, 45])
                     polyhedron(tTpoints,tTfaces);}
-    else if(position=="Center") {
-        polyhedron(tTpoints,tTfaces);}
     }
 
 module Cuboctahedron(edge=20, position="Face"){ //aC / aaT
@@ -280,7 +284,7 @@ module Icosidodecahedron(edge=20, position="Face"){ //aD
     
 /* **RENDERING OF SOLIDS** */
 TruncatedTetrahedron(edge=truncatedTetrahedron_Edge, position=position);
-translate([matrix,0,0])
+/*translate([matrix,0,0])
     Cuboctahedron(edge=cuboctahedron_Edge, position=position);
 translate([matrix*2,0,0])
     TruncatedCube(edge=truncatedCube_Edge, position=position);
@@ -291,5 +295,5 @@ translate([matrix*4,0,0])
 translate([matrix*5,0,0])
     TruncatedCuboctahedron(edge=truncatedCuboctahedron_Edge, position=position);
 translate([matrix*6,0,0])
-    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);
+    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);*/
     
