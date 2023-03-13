@@ -32,6 +32,8 @@ truncatedOctahedron_Edge=25; //[10:100]
 rhombicuboctahedron_Edge=25; //[10:100]
 // TruncatedCuboctahedron (h ****)
 truncatedCuboctahedron_Edge=15; //[10:100]
+// Snub Cube (h ****)
+snubCube_Edge=15; //[10:100]
 // Icosidodecahedron (h ****)
 icosidodecahedron_Edge=20; //[10:100]
 // Center of the solid or stand over a face
@@ -43,6 +45,7 @@ matrix = 100; //[50:200]
 module TruncatedTetrahedron(edge=20, position="Face"){ //tT
     // Invariants
     diAngle66_tT = acos(1/3); // dihedral angle between hexagonal faces of tT  = 70.529
+    diAngle36_tT = acos(-1/3); // dihedral angle between hexagonal-triangle faces of tT = 109,471
     
     rInsTruncatedTetrahedron = 3/sqrt(24); // radius of a inscribed sphere touching the hexagons - for edge = 1 -> radius = 0,612
     
@@ -76,12 +79,12 @@ module Cuboctahedron(edge=20, position="Face"){ //aC / aaT
 
     
     // Variables
-    x=edge/sqrt(2);
+    a=edge/sqrt(2);
     
     // Definition of points and faces
-    tCpoints=[  [x,x,0],[x,-x,0],[-x,-x,0],[-x,x,0],
-                [x,0,x],[x,0,-x],[-x,0,-x],[-x,0,x],
-                [0,x,x],[0,x,-x],[0,-x,-x],[0,-x,x]
+    tCpoints=[  [a,a,0],[a,-a,0],[-a,-a,0],[-a,a,0],
+                [a,0,a],[a,0,-a],[-a,0,-a],[-a,0,a],
+                [0,a,a],[0,a,-a],[0,-a,-a],[0,-a,a]
                 ];
     tCfaces=[   [0,4,1,5],[0,9,3,8],[1,11,2,10],[2,7,3,6],[4,8,7,11],[6,9,5,10],
                 [0,8,4],[0,5,9],[1,4,11],[1,10,5],
@@ -90,7 +93,7 @@ module Cuboctahedron(edge=20, position="Face"){ //aC / aaT
   
     // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
-        translate([0,0,x])
+        translate([0,0,a])
             polyhedron(tCpoints,tCfaces);}
     else if(position=="Center") {
         polyhedron(tCpoints,tCfaces);}
@@ -195,34 +198,35 @@ module Rhombicuboctahedron(edge=20, position="Face"){ //eC / aaC / aaaT
         //rotate([0, 0, 45])
             polyhedron(eCpoints,eCfaces);}
     }
-    
+        
 module TruncatedCuboctahedron(edge=20, position="Face"){ //bC / taC
-    // Constants
+    // Invariants
+    
     
     // Variables
-    x=edge/2+2*edge/sqrt(2);
+    a=edge/2+2*edge/sqrt(2);
     b=edge/sqrt(2); //b represent the truncation value to obtain regular polygons. It operates on the vertex of the original polyhedron, the cuboctahedron in this case.
-    b2=edge/2;
+    c=b/sqrt(2);
     
     // Definition of points and faces
-    taCpoints=[ [x-b,x,b2],[x-b,x,-b2],[x,x-b,-b2],[x,x-b,b2], //+X+Y
-                [x-b,-x,b2],[x-b,-x,-b2],[x,-(x-b),-b2],[x,-(x-b),b2], //+X-Y
-                [-(x-b),-x,b2],[-(x-b),-x,-b2],[-x,-(x-b),-b2],[-x,-(x-b),b2], //-X-Y
-                [-(x-b),x,b2],[-(x-b),x,-b2],[-x,x-b,-b2],[-x,x-b,b2], //-X+Y
+    taCpoints=[ [a-b, a, c],[a-b, a, -c],[a, a-b, -c],[a, a-b, c],          //+X+Y
+                [a-b,-a,c],[a-b,-a,-c],[a,-(a-b),-c],[a,-(a-b),c],          //+X-Y
+                [-(a-b),-a,c],[-(a-b),-a,-c],[-a,-(a-b),-c],[-a,-(a-b),c],  //-X-Y
+                [-(a-b),a,c],[-(a-b),a,-c],[-a,a-b,-c],[-a,a-b,c],          //-X+Y
     
-                [x-b,b2,x],[x-b,-b2,x],[x,-b2,x-b],[x,b2,x-b],  //+X+Z
-                [x-b,b2,-x],[x-b,-b2,-x],[x,-b2,-(x-b)],[x,b2,-(x-b)],  //+X-Z
-                [-(x-b),b2,-x],[-(x-b),-b2,-x],[-x,-b2,-(x-b)],[-x,b2,-(x-b)],  //-X-Z
-                [-(x-b),b2,x],[-(x-b),-b2,x],[-x,-b2,x-b],[-x,b2,x-b],  //-X+Z
+                [a-b,c,a],[a-b,-c,a],[a,-c,a-b],[a,c,a-b],                  //+X+Z
+                [a-b,c,-a],[a-b,-c,-a],[a,-c,-(a-b)],[a,c,-(a-b)],          //+X-Z
+                [-(a-b),c,-a],[-(a-b),-c,-a],[-a,-c,-(a-b)],[-a,c,-(a-b)],  //-X-Z
+                [-(a-b),c,a],[-(a-b),-c,a],[-a,-c,a-b],[-a,c,a-b],          //-X+Z
     
-                [b2,x-b,x],[-b2,x-b,x],[-b2,x,x-b],[b2,x,x-b],  //+Y+Z
-                [b2,x-b,-x],[-b2,x-b,-x],[-b2,x,-(x-b)],[b2,x,-(x-b)],  //+Y-Z
-                [b2,-(x-b),-x],[-b2,-(x-b),-x],[-b2,-x,-(x-b)],[b2,-x,-(x-b)],  //-Y-Z
-                [b2,-(x-b),x],[-b2,-(x-b),x],[-b2,-x,x-b],[b2,-x,x-b]   //-Y+Z
+                [c,a-b,a],[-c,a-b,a],[-c,a,a-b],[c,a,a-b],                  //+Y+Z
+                [c,a-b,-a],[-c,a-b,-a],[-c,a,-(a-b)],[c,a,-(a-b)],          //+Y-Z
+                [c,-(a-b),-a],[-c,-(a-b),-a],[-c,-a,-(a-b)],[c,-a,-(a-b)],  //-Y-Z
+                [c,-(a-b),a],[-c,-(a-b),a],[-c,-a,a-b],[c,-a,a-b]           //-Y+Z
                 ];
-    taCfaces=[  [0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],             // Centrer of square in XY
-                [16,17,18,19],[20,21,22,23],[24,25,26,27],[28,29,30,31],   // Centrer of square in XZ
-                [32,33,34,35],[36,37,38,39],[40,41,42,43],[44,45,46,47],   // Centrer of square in YZ
+    taCfaces=[  [0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],              // Centrer of squares in XY
+                [16,17,18,19],[20,21,22,23],[24,25,26,27],[28,29,30,31],    // Centrer of squares in XZ
+                [32,33,34,35],[36,37,38,39],[40,41,42,43],[44,45,46,47],    // Centrer of squares in YZ
                 [2,3,19,18,7,6,22,23],[34,35,0,1,39,38,13,12],
                 [15,14,27,26,10,11,30,31],[4,5,43,42,9,8,46,47],
                 [17,16,32,33,28,29,45,44],[21,20,36,37,24,25,41,40],
@@ -232,10 +236,77 @@ module TruncatedCuboctahedron(edge=20, position="Face"){ //bC / taC
   
     // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
-        translate([0,0,x])
+        translate([0,0,a])
             polyhedron(taCpoints,taCfaces);}
     else if(position=="Center") {
         polyhedron(taCpoints,taCfaces);}
+    }
+    
+module SnubCube(edge=20, position="Face"){ //sC
+    /* There are two possible Snubcubes, one symmetrical to the other. Both Snubcubes can be created from the vertices of a Truncated Cuboctahedron, half of the points for one Snubcube, the other half for the other Snubcube. Found in wikipedia, but does it make sense? diagonals of a square, a hexagon, and octogon should form a equilateral triangle, and it looks as is not possible*/
+    
+    // Invariants
+    
+    // Variables
+    a=edge/2+2*edge/sqrt(2);
+    b=1*edge/sqrt(2); //b represent the truncation value to obtain regular polygons. It operates on the vertex of the original polyhedron, the cuboctahedron in this case.
+    c=1*b/sqrt(2);
+    
+    // Definition of points and faces
+    sCpoints=[ [a-b, a, c],[a-b, a, -c],[a, a-b, -c],[a, a-b, c],           //+X+Y  [0-3]
+                [a-b,-a,c],[a-b,-a,-c],[a,-(a-b),-c],[a,-(a-b),c],          //+X-Y  [4-7]
+                [-(a-b),-a,c],[-(a-b),-a,-c],[-a,-(a-b),-c],[-a,-(a-b),c],  //-X-Y  [8-11]
+                [-(a-b),a,c],[-(a-b),a,-c],[-a,a-b,-c],[-a,a-b,c],          //-X+Y  [12-15]
+    
+                [a-b,c,a],[a-b,-c,a],[a,-c,a-b],[a,c,a-b],                  //+X+Z  [16-19]
+                [a-b,c,-a],[a-b,-c,-a],[a,-c,-(a-b)],[a,c,-(a-b)],          //+X-Z  [20-23]
+                [-(a-b),c,-a],[-(a-b),-c,-a],[-a,-c,-(a-b)],[-a,c,-(a-b)],  //-X-Z  [24-27]
+                [-(a-b),c,a],[-(a-b),-c,a],[-a,-c,a-b],[-a,c,a-b],          //-X+Z  [28-31]
+    
+                [c,a-b,a],[-c,a-b,a],[-c,a,a-b],[c,a,a-b],                  //+Y+Z  [32-35]
+                [c,a-b,-a],[-c,a-b,-a],[-c,a,-(a-b)],[c,a,-(a-b)],          //+Y-Z  [36-39]
+                [c,-(a-b),-a],[-c,-(a-b),-a],[-c,-a,-(a-b)],[c,-a,-(a-b)],  //-Y-Z  [40-43]
+                [c,-(a-b),a],[-c,-(a-b),a],[-c,-a,a-b],[c,-a,a-b]           //-Y+Z  [44-47]
+                ];
+    sCfaces=[  /*[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],              // Centrer of squares in XY
+                [16,17,18,19],[20,21,22,23],[24,25,26,27],[28,29,30,31],    // Centrer of squares in XZ
+                [32,33,34,35],[36,37,38,39],[40,41,42,43],[44,45,46,47],    // Centrer of squares in YZ*/
+                // Scub 1 - created with half of the points above described
+                [2,19,7,22],[15,27,10,30],          // squares in X
+                [34,0,39,13],[5,42,8,47],           // squares in Y
+                [17,32,28,45],[20,37,25,40],        // squares in Z
+                // Triangles in XY
+                [0,2,19],[2,0,39],
+                [15,13,27],[13,15,34],
+                [10,8,30],[8,10,42],
+                [5,7,47],[7,5,22],
+                // Triangles in XZ
+                [19,17,7],[17,19,32],
+                [28,45,30],[15,30,28],
+                [27,10,25],[25,37,27],
+                [20,40,22],[22,2,20],
+                // Triangles in YZ
+                [0,34,32],[34,28,32],
+                [17,45,47],[47,8,45],
+                [5,42,40],[40,25,42],
+                [37,20,39],[13,39,37],
+                // "Corner" triangles
+                [19,0,32],[15,34,28],[30,8,45],[7,47,17],  // Up
+                [2,39,20],[27,13,37],[10,42,25],[22,5,40],
+                 // Scub 2
+                /*[3,18,6,23],[35,1,38,12],    
+                [14,26,11,31],[4,43,9,46],
+                [16,33,29,44],[21,36,24,41],*/
+                /*[3,0,35,32,16,19],[1,2,23,20,36,39],[4,7,18,17,44,47],[43,40,21,22,6,5],
+                [12,15,31,28,33,34],[8,11,30,29,45,46],[14,13,38,37,24,27],[25,26,10,9,42,41]*/
+                ];
+  
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    if(position=="Face"){
+        translate([0,0,a])
+            polyhedron(sCpoints,sCfaces);}
+    else if(position=="Center") {
+        polyhedron(sCpoints,sCfaces);}
     }
 
 
@@ -284,7 +355,7 @@ module Icosidodecahedron(edge=20, position="Face"){ //aD
     
 /* **RENDERING OF SOLIDS** */
 TruncatedTetrahedron(edge=truncatedTetrahedron_Edge, position=position);
-/*translate([matrix,0,0])
+translate([matrix,0,0])
     Cuboctahedron(edge=cuboctahedron_Edge, position=position);
 translate([matrix*2,0,0])
     TruncatedCube(edge=truncatedCube_Edge, position=position);
@@ -295,5 +366,8 @@ translate([matrix*4,0,0])
 translate([matrix*5,0,0])
     TruncatedCuboctahedron(edge=truncatedCuboctahedron_Edge, position=position);
 translate([matrix*6,0,0])
-    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);*/
+    SnubCube(edge=snubCube_Edge, position=position);
+translate([matrix*7,0,0])
+    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);
+   
     
