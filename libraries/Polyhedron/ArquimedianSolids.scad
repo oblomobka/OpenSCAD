@@ -37,9 +37,11 @@ snubCube_Edge=15; //[10:100]
 // Icosidodecahedron (h ****)
 icosidodecahedron_Edge=20; //[10:100]
 // Center of the solid or stand over a face
-position = "Face"; //["Center", "Face"]
+position = "Center"; //["Center", "Face"]
 // Distance between solids in the rendering
 matrix = 100; //[50:200]
+// Chiral
+chiral = 0; //[0,1]
 
 /* **MODULES** */   
 module TruncatedTetrahedron(edge=20, position="Face"){ //tT
@@ -242,74 +244,80 @@ module TruncatedCuboctahedron(edge=20, position="Face"){ //bC / taC
         polyhedron(taCpoints,taCfaces);}
     }
     
-module SnubCube(edge=20, position="Face"){ //sC
-    /* There are two possible Snubcubes, one symmetrical to the other. Both Snubcubes can be created from the vertices of a Truncated Cuboctahedron, half of the points for one Snubcube, the other half for the other Snubcube. Found in wikipedia, but does it make sense? diagonals of a square, a hexagon, and octogon should form a equilateral triangle, and it looks as is not possible*/
+module SnubCube(edge=20, position="Face", chiral=0){ //sC - Created with tribonacci constant
+    
+    
+    // Constants
+    tri = (1+(19-3*sqrt(33))^(1/3)+(19+3*sqrt(33))^(1/3))/3;  // Tribonacci constant = 1,839...
     
     // Invariants
     
     // Variables
-    a=edge/2+2*edge/sqrt(2);
-    b=1*edge/sqrt(2); //b represent the truncation value to obtain regular polygons. It operates on the vertex of the original polyhedron, the cuboctahedron in this case.
-    c=1*b/sqrt(2);
+    factor = sqrt(2+4*tri-2*tri^2);
+    scale = edge/factor;
+    a=tri;//(sqrt(2+4*tri+2*tri^2));
     
     // Definition of points and faces
-    sCpoints=[ [a-b, a, c],[a-b, a, -c],[a, a-b, -c],[a, a-b, c],           //+X+Y  [0-3]
-                [a-b,-a,c],[a-b,-a,-c],[a,-(a-b),-c],[a,-(a-b),c],          //+X-Y  [4-7]
-                [-(a-b),-a,c],[-(a-b),-a,-c],[-a,-(a-b),-c],[-a,-(a-b),c],  //-X-Y  [8-11]
-                [-(a-b),a,c],[-(a-b),a,-c],[-a,a-b,-c],[-a,a-b,c],          //-X+Y  [12-15]
+    // Both simetric snub cubes are created with these points, even index buids one, odd index the other one
+    sCpoints=[  
+        [+a, +1, +1/a],[+a, +1/a, +1],[+1/a, +a, +1],[+1, +a, +1/a],[+1, +1/a, +a],[+1/a, +1, +a],   //Corner triangle XYZ      [0-5]
+        [+a, -1/a, +1],[+a, -1, +1/a],[+1, -a, +1/a],[+1/a, -a, +1],[+1/a, -1, +a],[+1, -1/a, +a],   //Corner triangle X-YZ     [6-11]
+        [-a, -1, +1/a],[-a, -1/a, +1],[-1/a, -a, +1],[-1, -a, +1/a],[-1, -1/a, +a],[-1/a, -1, +a],   //Corner triangle -X-YZ    [12-17]  
+        [-a, +1/a, +1],[-a, +1, +1/a],[-1, +a, +1/a],[-1/a, +a, +1],[-1/a, +1, +a],[-1, +1/a, +a],   //Corner triangle -XYZ     [18-23]
     
-                [a-b,c,a],[a-b,-c,a],[a,-c,a-b],[a,c,a-b],                  //+X+Z  [16-19]
-                [a-b,c,-a],[a-b,-c,-a],[a,-c,-(a-b)],[a,c,-(a-b)],          //+X-Z  [20-23]
-                [-(a-b),c,-a],[-(a-b),-c,-a],[-a,-c,-(a-b)],[-a,c,-(a-b)],  //-X-Z  [24-27]
-                [-(a-b),c,a],[-(a-b),-c,a],[-a,-c,a-b],[-a,c,a-b],          //-X+Z  [28-31]
-    
-                [c,a-b,a],[-c,a-b,a],[-c,a,a-b],[c,a,a-b],                  //+Y+Z  [32-35]
-                [c,a-b,-a],[-c,a-b,-a],[-c,a,-(a-b)],[c,a,-(a-b)],          //+Y-Z  [36-39]
-                [c,-(a-b),-a],[-c,-(a-b),-a],[-c,-a,-(a-b)],[c,-a,-(a-b)],  //-Y-Z  [40-43]
-                [c,-(a-b),a],[-c,-(a-b),a],[-c,-a,a-b],[c,-a,a-b]           //-Y+Z  [44-47]
-                ];
-    sCfaces=[  /*[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15],              // Centrer of squares in XY
-                [16,17,18,19],[20,21,22,23],[24,25,26,27],[28,29,30,31],    // Centrer of squares in XZ
-                [32,33,34,35],[36,37,38,39],[40,41,42,43],[44,45,46,47],    // Centrer of squares in YZ*/
-                // Scub 1 - created with half of the points above described
-                [2,19,7,22],[15,27,10,30],          // squares in X
-                [34,0,39,13],[5,42,8,47],           // squares in Y
-                [17,32,28,45],[20,37,25,40],        // squares in Z
-                // Triangles in XY
-                [0,2,19],[2,0,39],
-                [15,13,27],[13,15,34],
-                [10,8,30],[8,10,42],
-                [5,7,47],[7,5,22],
-                // Triangles in XZ
-                [19,17,7],[17,19,32],
-                [28,45,30],[15,30,28],
-                [27,10,25],[25,37,27],
-                [20,40,22],[22,2,20],
-                // Triangles in YZ
-                [0,34,32],[34,28,32],
-                [17,45,47],[47,8,45],
-                [5,42,40],[40,25,42],
-                [37,20,39],[13,39,37],
-                // "Corner" triangles
-                [19,0,32],[15,34,28],[30,8,45],[7,47,17],  // Up
-                [2,39,20],[27,13,37],[10,42,25],[22,5,40],
-                 // Scub 2
-                /*[3,18,6,23],[35,1,38,12],    
-                [14,26,11,31],[4,43,9,46],
-                [16,33,29,44],[21,36,24,41],*/
-                /*[3,0,35,32,16,19],[1,2,23,20,36,39],[4,7,18,17,44,47],[43,40,21,22,6,5],
-                [12,15,31,28,33,34],[8,11,30,29,45,46],[14,13,38,37,24,27],[25,26,10,9,42,41]*/
-                ];
+        [+a, +1/a, -1],[+a, +1, -1/a],[+1, +a, -1/a],[+1/a, +a, -1],[+1/a, +1, -a],[+1, +1/a, -a],   //Corner triangle XY-Z      [24-29]
+        [+a, -1, -1/a],[+a, -1/a, -1],[+1/a, -a, -1],[+1, -a, -1/a],[+1, -1/a, -a],[+1/a, -1, -a],   //Corner triangle X-Y-Z     [30-35]
+        [-a, -1/a, -1],[-a, -1, -1/a],[-1, -a, -1/a],[-1/a, -a, -1],[-1/a, -1, -a],[-1, -1/a, -a],   //Corner triangle -X-Y-Z    [36-41]  
+        [-a, +1, -1/a],[-a, +1/a, -1],[-1/a, +a, -1],[-1, +a, -1/a],[-1, +1/a, -a],[-1/a, +1, -a],   //Corner triangle -XY-Z     [42-47]
+        
+        ];
+    // Scub 1 - created with half of the points above described - odd index 
+    sCfaces1=[  
+        // "Corner" triangles
+        [1,5,3],[7,11,9],[13,15,17],[19,21,23],             // Up
+        [25,27,29],[31,33,35],[37,39,41],[43,45,47],        // Down
+        // Squares
+        [1,25,31,7],[3,21,45,27],[5,11,17,23],              // Up
+        [13,37,43,19],[15,9,33,39],[41,35,29,47],           // Down
+        // Other triangles
+        [5,11,1],[1,11,7],[3,21,5],[5,21,23],[19,13,23],[23,13,17],[15,9,17],[17,9,11],
+        [1,25,3],[3,25,27],[21,45,19],[19,45,43],[13,37,15],[15,37,39],[9,33,7],[7,33,31],
+        [29,47,27],[27,47,45],[47,41,43],[43,41,37],[41,35,39],[39,35,33],[35,29,31],[31,29,25]
+        ];
+    // Scub 2 - created with half of the points above described - even index
+    sCfaces2=[  
+        // "Corner" triangles
+        [0,2,4],[6,8,10],[12,14,16],[18,20,22],             // Up
+        [24,26,28],[30,32,34],[36,38,40],[42,44,46],        // Down
+        // Squares
+        [0,24,30,6],[2,20,44,26],[4,10,16,22],              // Up
+        [12,36,42,18],[14,8,32,38],[40,34,28,46],           // Down
+        // Other triangles
+        [4,10,6],[6,0,4],[4,2,22],[22,2,20],[22,18,16],[16,18,12],[16,14,10],[10,14,8],
+        [2,0,26],[26,0,24],[18,20,42],[42,20,44],[14,12,38],[38,12,36],[6,8,30],[30,8,32],
+        [26,28,44],[44,28,46],[42,46,36],[36,46,40],[38,40,32],[32,40,34],[30,34,24],[24,34,28]
+        ];
   
     // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
-    if(position=="Face"){
-        translate([0,0,a])
-            polyhedron(sCpoints,sCfaces);}
-    else if(position=="Center") {
-        polyhedron(sCpoints,sCfaces);}
+    if (chiral==0){
+        if(position=="Face"){
+            translate([0,0,0])
+                scale([scale,scale,scale])
+                    polyhedron(sCpoints,sCfaces1);}
+        else if(position=="Center") {
+            scale([scale,scale,scale])
+                polyhedron(sCpoints,sCfaces1);
+                echo(factor);
+            }
+        }
+    else if(chiral==1) {
+        if(position=="Face"){
+            translate([0,0,a])
+                polyhedron(sCpoints,sCfaces2);}
+        else if(position=="Center") {
+            polyhedron(sCpoints,sCfaces2);}
+        }
     }
-
-
 module Icosidodecahedron(edge=20, position="Face"){ //aD
     // Constants
     phi = (1+sqrt(5))/2; // Golden ratio = 1,618...
@@ -354,7 +362,7 @@ module Icosidodecahedron(edge=20, position="Face"){ //aD
     }
     
 /* **RENDERING OF SOLIDS** */
-TruncatedTetrahedron(edge=truncatedTetrahedron_Edge, position=position);
+/*TruncatedTetrahedron(edge=truncatedTetrahedron_Edge, position=position);
 translate([matrix,0,0])
     Cuboctahedron(edge=cuboctahedron_Edge, position=position);
 translate([matrix*2,0,0])
@@ -365,9 +373,8 @@ translate([matrix*4,0,0])
     Rhombicuboctahedron(edge=rhombicuboctahedron_Edge, position=position);
 translate([matrix*5,0,0])
     TruncatedCuboctahedron(edge=truncatedCuboctahedron_Edge, position=position);
-translate([matrix*6,0,0])
-    SnubCube(edge=snubCube_Edge, position=position);
-translate([matrix*7,0,0])
-    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);
+translate([matrix*6,0,0])*/
+    SnubCube(edge=snubCube_Edge, position=position, chiral=chiral);
+//translate([matrix*7,0,0]){Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);}
    
     
