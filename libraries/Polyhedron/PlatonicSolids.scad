@@ -1,13 +1,13 @@
 // PlatonicSolids v.01
-// (C) @oblomobka - 2023.02
+// (C) @oblomobka - 2023.03
 // GPL license
 /*  LIST OF PLATONIC SOLIDS
     -----------------------                        
-    - Tetrahedron
-    - Octahedron
-    - Cube
-    - Dodecahedron
-    - Icosahedron
+    + Tetrahedron
+    + Octahedron
+    + Cube
+    + Dodecahedron
+    + Icosahedron
 */
 
 /* **CUSTOMIZER VARIABLES** */
