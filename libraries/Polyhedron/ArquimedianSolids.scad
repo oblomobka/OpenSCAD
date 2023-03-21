@@ -10,7 +10,7 @@
     + Truncated Octahedron          tO / bT
     + Rhombicuboctahedron           eC / aaC / aaaT
     + Truncated Cuboctahedron       bC / taC
-    - Snub Cube                     sC
+    + Snub Cube                     sC
     + Icosidodecahedron             aD
     - Truncated Dodecahedron        tD
     - Truncated Icosahedron         tI
@@ -41,7 +41,8 @@ position = "Center"; //["Center", "Face"]
 // Distance between solids in the rendering
 matrix = 100; //[50:200]
 // Chiral
-chiral = 0; //[0,1]
+chiral = "Laevo"; //["Laevo", "Dextro"]
+
 
 /* **MODULES** */   
 module TruncatedTetrahedron(edge=20, position="Face"){ //tT
@@ -244,18 +245,19 @@ module TruncatedCuboctahedron(edge=20, position="Face"){ //bC / taC
         polyhedron(taCpoints,taCfaces);}
     }
     
-module SnubCube(edge=20, position="Face", chiral=0){ //sC - Created with tribonacci constant
-    
-    
+module SnubCube(edge=20, position="Face", chiral="Laevo"){ //sC - Created with tribonacci constant
+    $fs = 0.1;
     // Constants
     tri = (1+(19-3*sqrt(33))^(1/3)+(19+3*sqrt(33))^(1/3))/3;  // Tribonacci constant = 1,839...
     
     // Invariants
+    rCirSnubCube = sqrt((1+1/tri^2)+tri^2);
     
     // Variables
-    factor = sqrt(2+4*tri-2*tri^2);
+    //factor2 = sqrt(2+4*tri-2*tri^2); // acording to Wikipedia
+    factor = sqrt(2*(1+1/tri^2)); // =1,60972 
     scale = edge/factor;
-    a=tri;//(sqrt(2+4*tri+2*tri^2));
+    a=tri;
     
     // Definition of points and faces
     // Both simetric snub cubes are created with these points, even index buids one, odd index the other one
@@ -272,7 +274,7 @@ module SnubCube(edge=20, position="Face", chiral=0){ //sC - Created with tribona
         
         ];
     // Scub 1 - created with half of the points above described - odd index 
-    sCfaces1=[  
+    sCfaceslaevo=[  
         // "Corner" triangles
         [1,5,3],[7,11,9],[13,15,17],[19,21,23],             // Up
         [25,27,29],[31,33,35],[37,39,41],[43,45,47],        // Down
@@ -285,7 +287,7 @@ module SnubCube(edge=20, position="Face", chiral=0){ //sC - Created with tribona
         [29,47,27],[27,47,45],[47,41,43],[43,41,37],[41,35,39],[39,35,33],[35,29,31],[31,29,25]
         ];
     // Scub 2 - created with half of the points above described - even index
-    sCfaces2=[  
+    sCfacesdextro=[  
         // "Corner" triangles
         [0,2,4],[6,8,10],[12,14,16],[18,20,22],             // Up
         [24,26,28],[30,32,34],[36,38,40],[42,44,46],        // Down
@@ -299,25 +301,36 @@ module SnubCube(edge=20, position="Face", chiral=0){ //sC - Created with tribona
         ];
   
     // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
-    if (chiral==0){
+    if (chiral=="Laevo"){
         if(position=="Face"){
-            translate([0,0,0])
+            translate([0,0,scale*a])
                 scale([scale,scale,scale])
-                    polyhedron(sCpoints,sCfaces1);}
+                    polyhedron(sCpoints,sCfaceslaevo);}
         else if(position=="Center") {
-            scale([scale,scale,scale])
-                polyhedron(sCpoints,sCfaces1);
-                echo(factor);
+            scale([scale,scale,scale]){
+                polyhedron(sCpoints,sCfaceslaevo);
+                //color( "orange", 0.2 ) {sphere(rCirSnubCube);}}
             }
         }
-    else if(chiral==1) {
-        if(position=="Face"){
-            translate([0,0,a])
-                polyhedron(sCpoints,sCfaces2);}
-        else if(position=="Center") {
-            polyhedron(sCpoints,sCfaces2);}
-        }
     }
+    else if(chiral=="Dextro") {
+        if(position=="Face"){
+            translate([0,0,scale*a])
+                scale([scale,scale,scale])
+                    polyhedron(sCpoints,sCfacesdextro);}
+        else if(position=="Center") {
+            scale([scale,scale,scale]){
+                polyhedron(sCpoints,sCfacesdextro);
+                //color( "orange", 0.2 ) {sphere(rCirSnubCube);}
+                }
+        }       
+    }
+        echo(factor);
+        echo(scale);
+        echo (rCirSnubCube*scale);
+}
+
+
 module Icosidodecahedron(edge=20, position="Face"){ //aD
     // Constants
     phi = (1+sqrt(5))/2; // Golden ratio = 1,618...
