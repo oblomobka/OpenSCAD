@@ -11,10 +11,20 @@ include <../general/constants.scad>
 /* **CUSTOMIZER VARIABLES** */
 // Edge
 edge = 20; //[10:100]
+
+/* **Variables for Snub Cube Irregular** */
 // Spin of squares in the Snub cube
 spinS = 200; //[0:1000]
 // Scale of squares in the Snub cube
 scaleS = 100; //[0:1000]
+
+/* **Variables for Snub Cube Roll** */
+// rotations x
+spX = 0; //[0:360]
+// rotations y
+spY = 0; //[0:360]
+// rotations z
+spZ = 0; //[0:360]
 
 module Engendro1(edge=20){ 
     x=edge*phi; // x represent the side of cube inscrit in the dodecahedron, that is the lenght of the diagonal of regular pentagon
@@ -111,6 +121,73 @@ module SnubCubeIrregular(edge=20, position="Face", spinS=1, scaleS=1){ //sC
         polyhedron(sCpoints,sCfaces);}
     }
     
-SnubCubeIrregular (edge=edge, position="Center", spinS=spinS, scaleS=scaleS);    
+module SnubCubeRoll(edge=20, spin=[0, 0, 0]){ //sC - Created with tribonacci constant
+    $fs = 0.1;
+    // Constants
+    tri = (1+(19-3*sqrt(33))^(1/3)+(19+3*sqrt(33))^(1/3))/3;  // Tribonacci constant = 1,839...
+    
+    // Invariants
+    rCirSnubCube = sqrt((1+1/tri^2)+tri^2);
+    
+    // Variables
+    //factor2 = sqrt(2+4*tri-2*tri^2); // acording to Wikipedia
+    factor = sqrt(2*(1+1/tri^2)); // =1,60972 
+    scale = edge/factor;
+    a=tri;
+    
+    // Definition of points and faces
+    // Both simetric snub cubes are created with these points, even index buids one, odd index the other one
+    sCpoints=[  
+        [+a, +1, +1/a],[+a, +1/a, +1],[+1/a, +a, +1],[+1, +a, +1/a],[+1, +1/a, +a],[+1/a, +1, +a],   //Corner triangle XYZ      [0-5]
+        [+a, -1/a, +1],[+a, -1, +1/a],[+1, -a, +1/a],[+1/a, -a, +1],[+1/a, -1, +a],[+1, -1/a, +a],   //Corner triangle X-YZ     [6-11]
+        [-a, -1, +1/a],[-a, -1/a, +1],[-1/a, -a, +1],[-1, -a, +1/a],[-1, -1/a, +a],[-1/a, -1, +a],   //Corner triangle -X-YZ    [12-17]  
+        [-a, +1/a, +1],[-a, +1, +1/a],[-1, +a, +1/a],[-1/a, +a, +1],[-1/a, +1, +a],[-1, +1/a, +a],   //Corner triangle -XYZ     [18-23]
+    
+        [+a, +1/a, -1],[+a, +1, -1/a],[+1, +a, -1/a],[+1/a, +a, -1],[+1/a, +1, -a],[+1, +1/a, -a],   //Corner triangle XY-Z      [24-29]
+        [+a, -1, -1/a],[+a, -1/a, -1],[+1/a, -a, -1],[+1, -a, -1/a],[+1, -1/a, -a],[+1/a, -1, -a],   //Corner triangle X-Y-Z     [30-35]
+        [-a, -1/a, -1],[-a, -1, -1/a],[-1, -a, -1/a],[-1/a, -a, -1],[-1/a, -1, -a],[-1, -1/a, -a],   //Corner triangle -X-Y-Z    [36-41]  
+        [-a, +1, -1/a],[-a, +1/a, -1],[-1/a, +a, -1],[-1, +a, -1/a],[-1, +1/a, -a],[-1/a, +1, -a],   //Corner triangle -XY-Z     [42-47]
+        
+        ];
+    // Scub 1 - created with half of the points above described - odd index 
+    sCfaceslaevo=[  
+        // "Corner" triangles
+        [1,5,3],[7,11,9],[13,15,17],[19,21,23],             // Up
+        [25,27,29],[31,33,35],[37,39,41],[43,45,47],        // Down
+        // Squares
+        [1,25,31,7],[3,21,45,27],[5,11,17,23],              // Up
+        [13,37,43,19],[15,9,33,39],[41,35,29,47],           // Down
+        // Other triangles
+        [5,11,1],[1,11,7],[3,21,5],[5,21,23],[19,13,23],[23,13,17],[15,9,17],[17,9,11],
+        [1,25,3],[3,25,27],[21,45,19],[19,45,43],[13,37,15],[15,37,39],[9,33,7],[7,33,31],
+        [29,47,27],[27,47,45],[47,41,43],[43,41,37],[41,35,39],[39,35,33],[35,29,31],[31,29,25]
+        ];
+    // Scub 2 - created with half of the points above described - even index
+    sCfacesdextro=[  
+        // "Corner" triangles
+        [0,2,4],[6,8,10],[12,14,16],[18,20,22],             // Up
+        [24,26,28],[30,32,34],[36,38,40],[42,44,46],        // Down
+        // Squares
+        [0,24,30,6],[2,20,44,26],[4,10,16,22],              // Up
+        [12,36,42,18],[14,8,32,38],[40,34,28,46],           // Down
+        // Other triangles
+        [4,10,6],[6,0,4],[4,2,22],[22,2,20],[22,18,16],[16,18,12],[16,14,10],[10,14,8],
+        [2,0,26],[26,0,24],[18,20,42],[42,20,44],[14,12,38],[38,12,36],[6,8,30],[30,8,32],
+        [26,28,44],[44,28,46],[42,46,36],[36,46,40],[38,40,32],[32,40,34],[30,34,24],[24,34,28]
+        ];
+  
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    rotate([spin[0], -spin[1], spin[2]])
+        scale([scale,scale,scale])
+            polyhedron(sCpoints,sCfaceslaevo);
+        
+    rotate([-spin[0], +spin[1], -spin[2]])
+        scale([scale,scale,scale])
+            polyhedron(sCpoints,sCfacesdextro);
+
+   }
+
+SnubCubeRoll(edge=edge, spin=[spX, spY, spZ]);
+//SnubCubeIrregular (edge=edge, position="Center", spinS=spinS, scaleS=scaleS);    
 //Engendro1(edge=5);
 //Engendro2(edge=0.8);
