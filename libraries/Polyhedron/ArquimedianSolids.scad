@@ -12,7 +12,7 @@
     + Truncated Cuboctahedron       bC / taC
     + Snub Cube                     sC
     + Icosidodecahedron             aD
-    - Truncated Dodecahedron        tD
+    + Truncated Dodecahedron        tD
     - Truncated Icosahedron         tI
     - Rhombicosidodecahedron        eD / aaD
     - Truncated Icosidodecahedron   bD / taD
@@ -36,6 +36,8 @@ truncatedCuboctahedron_Edge=15; //[10:100]
 snubCube_Edge=15; //[10:100]
 // Icosidodecahedron (h ****)
 icosidodecahedron_Edge=20; //[10:100]
+// Truncated Dodecahedron (h ****)
+truncatedDodecahedron_Edge=20; //[10:100]
 // Center of the solid or stand over a face
 position = "Center"; //["Center", "Face"]
 // Distance between solids in the rendering
@@ -374,8 +376,96 @@ module Icosidodecahedron(edge=20, position="Face"){ //aD
         polyhedron(aDpoints,aDfaces);}
     }
     
+
+module TruncatedDodecahedron(edge=20, position="Face"){  // tD
+    // Constants
+    phi = (1+sqrt(5))/2; // Golden ratio = 1,618...
+    
+    // Invariants
+    diAngleDodecahedron = acos(-1/sqrt(5))/*atan(1/phi)*/; // dihedral angle of Dodecahedron = 116,56505...
+    
+    // Relations
+    r10 = (sqrt((25 +11*sqrt(5))/2))/2;
+    
+    // Variables
+    s = edge * (phi / 2); // * (2 / phi);
+    // define 3 rectangles on plane XY/XZ/YZ
+    p1 = (2 + phi) * s;
+    p2 = (1 / phi) * s;
+    // define 3 boxes. Every point in one octant
+    b1 = (2 * phi) * s;
+    b2 = (1 * phi) * s;
+    b3 = (1 / phi) * s;
+    // define 8 triangles. One triangle per octant
+    t1 = (phi + 1) * s;
+    t2 = 2 * s;
+    t3 = (1 * phi) * s;
+    
+    
+    // Definition of points and faces V = 60 / F3 = 20 / F10 = 12
+    Dpoints = [
+    
+        // Build 3 rectangles on plane XY/XZ/YZ
+        [+p1, +p2,   0], [-p1, +p2,   0], [+p1, -p2,   0], [-p1, -p2,   0],    // XY
+        [+p2,   0, +p1], [-p2,   0, +p1], [+p2,   0, -p1], [-p2,   0, -p1],    // XZ
+        [0,   +p1, +p2], [0,   -p1, +p2], [0,   +p1, -p2], [0,   -p1, -p2],    // XZ
+        
+        // build 3 boxes. Every point in one octant
+        [+b1, +b2, +b3], [-b1, +b2, +b3], [+b1, -b2, +b3], [-b1, -b2, +b3],    // XYZ order by size - UP side
+        [+b1, +b2, -b3], [-b1, +b2, -b3], [+b1, -b2, -b3], [-b1, -b2, -b3],    // XYZ order by size - DOWN side
+        
+        [+b2, +b3, +b1], [-b2, +b3, +b1], [+b2, -b3, +b1], [-b2, -b3, +b1],    // YZX order by size - UP side
+        [+b2, +b3, -b1], [-b2, +b3, -b1], [+b2, -b3, -b1], [-b2, -b3, -b1],    // YZX order by size - Down side
+        
+        [+b3, +b1, +b2], [-b3, +b1, +b2], [+b3, -b1, +b2], [-b3, -b1, +b2],    // ZXY order by size - UP side
+        [+b3, +b1, -b2], [-b3, +b1, -b2], [+b3, -b1, -b2], [-b3, -b1, -b2],    // ZXY order by size - DOWN side
+        
+        // Build 8 triangles. One triangle per octant
+        [+t1, +t2, +t3], [-t1, +t2, +t3], [+t1, -t2, +t3], [-t1, -t2, +t3],    //   36  37  38  39
+        [+t1, +t2, -t3], [-t1, +t2, -t3], [+t1, -t2, -t3], [-t1, -t2, -t3],    //   40  41  42  43    
+        
+        [+t2, +t3, +t1], [-t2, +t3, +t1], [+t2, -t3, +t1], [-t2, -t3, +t1],    //   44  45  46  47
+        [+t2, +t3, -t1], [-t2, +t3, -t1], [+t2, -t3, -t1], [-t2, -t3, -t1],    //   48  49  50  51  
+        
+        [+t3, +t1, +t2], [-t3, +t1, +t2], [+t3, -t1, +t2], [-t3, -t1, +t2],    //   52  53  54  55  
+        [+t3, +t1, -t2], [-t3, +t1, -t2], [+t3, -t1, -t2], [-t3, -t1, -t2]     //   56  57  58  59  
+        
+        ];
+         
+    Dfaces = [
+    
+        // Triangles on planes
+        [ 0, 16, 12], [ 1, 13, 17], [ 2, 14, 18], [ 3, 19, 15],        // XY
+        [ 4, 20, 22], [ 5, 21, 23], [ 6, 24, 26], [ 7, 25, 27],        // XZ
+        [ 8, 28, 29], [ 9, 30, 31], [10, 32, 33], [11, 34, 35],        // YZ
+        
+        // Triangles on corners
+        [36, 44, 52], [37, 45, 53], [38, 46, 54], [39, 47, 55],        // UP    - A/B/C/D
+        [40, 48, 56], [41, 49, 57], [42, 50, 58], [43, 51, 59],        // DOWN  - E/F/G/H
+        
+        // Decagons
+        [  0, 12, 36, 44, 20, 22, 46, 38, 14,  2], [  0,  2, 18, 42, 50, 26, 24, 48, 40, 16],     // +X
+        [  1,  3, 15, 39, 47, 23, 21, 45, 37, 13], [  1, 17, 41, 49, 25, 27, 51, 43, 19,  3],     // -X
+        [  8, 28, 52, 36, 12, 16, 40, 56, 32, 10], [  8, 10, 33, 57, 41, 17, 13, 37, 53, 29],     // +Y
+        [  9, 11, 34, 58, 42, 18, 14, 38, 54, 30], [  9, 31, 55, 39, 15, 19, 43, 59, 35, 11],     // -Y
+        [  4, 20, 44, 52, 28, 29, 53, 45, 21,  5], [  4,  5, 23, 47, 55, 31, 30, 54, 46, 22],     // +Z
+        [  6, 24, 48, 56, 32, 33, 57, 49, 25,  7], [  6, 26, 50, 58, 34, 35, 59, 51, 27,  7]      // -Z
+        
+        ];
+    
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    if(position=="Face"){
+        translate([0,0,edge*r10])
+            rotate([90-diAngleDodecahedron/2, 0, 0])
+                polyhedron(Dpoints,Dfaces);
+        }
+        
+    else if(position=="Center") {
+        polyhedron(Dpoints,Dfaces);        
+        } 
+}
 /* **RENDERING OF SOLIDS** */
-/*TruncatedTetrahedron(edge=truncatedTetrahedron_Edge, position=position);
+TruncatedTetrahedron(edge=truncatedTetrahedron_Edge, position=position);
 translate([matrix,0,0])
     Cuboctahedron(edge=cuboctahedron_Edge, position=position);
 translate([matrix*2,0,0])
@@ -386,8 +476,11 @@ translate([matrix*4,0,0])
     Rhombicuboctahedron(edge=rhombicuboctahedron_Edge, position=position);
 translate([matrix*5,0,0])
     TruncatedCuboctahedron(edge=truncatedCuboctahedron_Edge, position=position);
-translate([matrix*6,0,0])*/
+translate([matrix*6,0,0])
     SnubCube(edge=snubCube_Edge, position=position, chiral=chiral);
-//translate([matrix*7,0,0]){Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);}
+translate([matrix*7,0,0])
+    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);
+translate([matrix*8,0,0])
+    TruncatedDodecahedron(edge=truncatedDodecahedron_Edge, position=position);
    
     
