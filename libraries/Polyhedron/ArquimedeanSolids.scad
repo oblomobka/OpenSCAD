@@ -1,7 +1,7 @@
 // ArquimedianSolids v.01
 // (C) @oblomobka - 2023.03
 // GPL license
-/*  LIST OF ARQUIMEDIAN SOLIDS
+/*  LIST OF ARQUIMEDEAN SOLIDS
     -------------------------------------------------
     NAME                            CONWAY NOTATION
     + Truncated Tetrahedron         tT
