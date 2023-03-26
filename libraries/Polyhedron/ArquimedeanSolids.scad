@@ -4,16 +4,16 @@
 /*  LIST OF ARQUIMEDEAN SOLIDS
     -------------------------------------------------
     NAME                            CONWAY NOTATION
-    + Truncated Tetrahedron         tT
-    + Cuboctahedron                 aC / aaT
-    + Truncated Cube                tC
-    + Truncated Octahedron          tO / bT
-    + Rhombicuboctahedron           eC / aaC / aaaT
-    + Truncated Cuboctahedron       bC / taC
-    + Snub Cube                     sC
-    + Icosidodecahedron             aD
-    + Truncated Dodecahedron        tD
-    - Truncated Icosahedron         tI
+    +- Truncated Tetrahedron         tT
+    +- Cuboctahedron                 aC / aaT
+    +- Truncated Cube                tC
+    +- Truncated Octahedron          tO / bT
+    +- Rhombicuboctahedron           eC / aaC / aaaT
+    +- Truncated Cuboctahedron       bC / taC
+    +- Snub Cube                     sC
+    +- Icosidodecahedron             aD
+    +- Truncated Dodecahedron        tD
+    ++ Truncated Icosahedron         tI
     - Rhombicosidodecahedron        eD / aaD
     - Truncated Icosidodecahedron   bD / taD
     - Snub Dodecahedron             sD
@@ -38,6 +38,8 @@ snubCube_Edge=15; //[10:100]
 icosidodecahedron_Edge=20; //[10:100]
 // Truncated Dodecahedron (h ****)
 truncatedDodecahedron_Edge=20; //[10:100]
+// Truncated Icosahedron (h ****)
+truncatedIcosahedron_Edge=20; //[10:100]
 // Center of the solid or stand over a face
 position = "Center"; //["Center", "Face"]
 // Distance between solids in the rendering
@@ -377,15 +379,17 @@ module Icosidodecahedron(edge=20, position="Face"){ //aD
     }
     
 
+
+
 module TruncatedDodecahedron(edge=20, position="Face"){  // tD
     // Constants
     phi = (1+sqrt(5))/2; // Golden ratio = 1,618...
     
     // Invariants
-    diAngleDodecahedron = acos(-1/sqrt(5))/*atan(1/phi)*/; // dihedral angle of Dodecahedron = 116,56505...
+    diAngleDodecahedron = acos(-1/sqrt(5)); // dihedral angle of Dodecahedron = 116,56505...
     
     // Relations
-    r10 = (sqrt((25 +11*sqrt(5))/2))/2;
+    rInsDecagon = (sqrt((25 +11*sqrt(5))/2))/2;
     
     // Variables
     s = edge * (phi / 2); // * (2 / phi);
@@ -407,55 +411,55 @@ module TruncatedDodecahedron(edge=20, position="Face"){  // tD
     
         // Build 3 rectangles on plane XY/XZ/YZ
         [+p1, +p2,   0], [-p1, +p2,   0], [+p1, -p2,   0], [-p1, -p2,   0],    // XY
-        [+p2,   0, +p1], [-p2,   0, +p1], [+p2,   0, -p1], [-p2,   0, -p1],    // XZ
+        [+p2,   0, +p1], [+p2,   0, -p1], [-p2,   0, +p1], [-p2,   0, -p1],    // XZ
         [0,   +p1, +p2], [0,   -p1, +p2], [0,   +p1, -p2], [0,   -p1, -p2],    // XZ
         
         // build 3 boxes. Every point in one octant
         [+b1, +b2, +b3], [-b1, +b2, +b3], [+b1, -b2, +b3], [-b1, -b2, +b3],    // XYZ order by size - UP side
         [+b1, +b2, -b3], [-b1, +b2, -b3], [+b1, -b2, -b3], [-b1, -b2, -b3],    // XYZ order by size - DOWN side
         
-        [+b2, +b3, +b1], [-b2, +b3, +b1], [+b2, -b3, +b1], [-b2, -b3, +b1],    // YZX order by size - UP side
-        [+b2, +b3, -b1], [-b2, +b3, -b1], [+b2, -b3, -b1], [-b2, -b3, -b1],    // YZX order by size - Down side
+        [+b2, +b3, +b1], [+b2, +b3, -b1], [-b2, +b3, +b1], [-b2, +b3, -b1],    // YZX order by size - UP side
+        [+b2, -b3, +b1], [+b2, -b3, -b1], [-b2, -b3, +b1], [-b2, -b3, -b1],,    // YZX order by size - Down side
         
-        [+b3, +b1, +b2], [-b3, +b1, +b2], [+b3, -b1, +b2], [-b3, -b1, +b2],    // ZXY order by size - UP side
-        [+b3, +b1, -b2], [-b3, +b1, -b2], [+b3, -b1, -b2], [-b3, -b1, -b2],    // ZXY order by size - DOWN side
+        [+b3, +b1, +b2], [+b3, -b1, +b2], [+b3, +b1, -b2], [+b3, -b1, -b2],    // ZXY order by size - UP side
+        [-b3, +b1, +b2], [-b3, -b1, +b2], [-b3, +b1, -b2], [-b3, -b1, -b2],    // ZXY order by size - DOWN side
         
         // Build 8 triangles. One triangle per octant
         [+t1, +t2, +t3], [-t1, +t2, +t3], [+t1, -t2, +t3], [-t1, -t2, +t3],    //   36  37  38  39
         [+t1, +t2, -t3], [-t1, +t2, -t3], [+t1, -t2, -t3], [-t1, -t2, -t3],    //   40  41  42  43    
         
-        [+t2, +t3, +t1], [-t2, +t3, +t1], [+t2, -t3, +t1], [-t2, -t3, +t1],    //   44  45  46  47
-        [+t2, +t3, -t1], [-t2, +t3, -t1], [+t2, -t3, -t1], [-t2, -t3, -t1],    //   48  49  50  51  
+        [+t2, +t3, +t1], [+t2, +t3, -t1], [-t2, +t3, +t1], [-t2, +t3, -t1],    //   44  45  46  47
+        [+t2, -t3, +t1], [+t2, -t3, -t1], [-t2, -t3, +t1], [-t2, -t3, -t1],    //   48  49  50  51  
         
-        [+t3, +t1, +t2], [-t3, +t1, +t2], [+t3, -t1, +t2], [-t3, -t1, +t2],    //   52  53  54  55  
-        [+t3, +t1, -t2], [-t3, +t1, -t2], [+t3, -t1, -t2], [-t3, -t1, -t2]     //   56  57  58  59  
+        [+t3, +t1, +t2], [+t3, -t1, +t2], [+t3, +t1, -t2], [+t3, -t1, -t2],    //   52  53  54  55  
+        [-t3, +t1, +t2], [-t3, -t1, +t2], [-t3, +t1, -t2], [-t3, -t1, -t2]     //   56  57  58  59  
         
         ];
          
     Dfaces = [
     
         // Triangles on planes
-        [ 0, 16, 12], [ 1, 13, 17], [ 2, 14, 18], [ 3, 19, 15],        // XY
-        [ 4, 20, 22], [ 5, 21, 23], [ 6, 24, 26], [ 7, 25, 27],        // XZ
-        [ 8, 28, 29], [ 9, 30, 31], [10, 32, 33], [11, 34, 35],        // YZ
+        [  0, 16, 12], [  1, 13, 17], [  2, 14, 18], [  3, 19, 15],        // XY
+        [  4, 20, 24], [  5, 21, 25], [  6, 22, 26], [  7, 23, 27],        // XZ
+        [  8, 28, 32], [  9, 29, 33], [ 10, 30, 34], [ 11, 31, 35],        // YZ
         
         // Triangles on corners
-        [36, 44, 52], [37, 45, 53], [38, 46, 54], [39, 47, 55],        // UP    - A/B/C/D
-        [40, 48, 56], [41, 49, 57], [42, 50, 58], [43, 51, 59],        // DOWN  - E/F/G/H
+        [ 36, 44, 52], [ 37, 46, 56], [ 38, 48, 53], [ 39, 50, 57],        // UP    - A/B/C/D
+        [ 40, 45, 54], [ 41, 47, 58], [ 42, 49, 55], [ 43, 51, 59],        // DOWN  - E/F/G/H
         
         // Decagons
-        [  0, 12, 36, 44, 20, 22, 46, 38, 14,  2], [  0,  2, 18, 42, 50, 26, 24, 48, 40, 16],     // +X
-        [  1,  3, 15, 39, 47, 23, 21, 45, 37, 13], [  1, 17, 41, 49, 25, 27, 51, 43, 19,  3],     // -X
-        [  8, 28, 52, 36, 12, 16, 40, 56, 32, 10], [  8, 10, 33, 57, 41, 17, 13, 37, 53, 29],     // +Y
-        [  9, 11, 34, 58, 42, 18, 14, 38, 54, 30], [  9, 31, 55, 39, 15, 19, 43, 59, 35, 11],     // -Y
-        [  4, 20, 44, 52, 28, 29, 53, 45, 21,  5], [  4,  5, 23, 47, 55, 31, 30, 54, 46, 22],     // +Z
-        [  6, 24, 48, 56, 32, 33, 57, 49, 25,  7], [  6, 26, 50, 58, 34, 35, 59, 51, 27,  7]      // -Z
+        [  0, 12, 36, 44, 20, 24, 48, 38, 14,  2], [  0,  2, 18, 42, 49, 25, 21, 45, 40, 16],     // +X
+        [  1,  3, 15, 39, 50, 26, 22, 46, 37, 13], [  1, 17, 41, 47, 23, 27, 51, 43, 19,  3],     // -X
+        [  8, 28, 52, 36, 12, 16, 40, 54, 30, 10], [  8, 10, 34, 58, 41, 17, 13, 37, 56, 32],     // +Y
+        [  9, 33, 57, 39, 15, 19, 43, 59, 35, 11], [  9, 11, 31, 55, 42, 18, 14, 38, 53, 29],     // -Y
+        [  4, 20, 44, 52, 28, 32, 56, 46, 22,  6], [  4,  6, 26, 50, 57, 33, 29, 53, 48, 24],     // +Z
+        [  5, 25, 49, 55, 31, 35, 59, 51, 27,  7], [  5,  7, 23, 47, 58, 34, 30, 54, 45, 21]      // -Z*/
         
         ];
     
     // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
     if(position=="Face"){
-        translate([0,0,edge*r10])
+        translate([0,0,edge*rInsDecagon])
             rotate([90-diAngleDodecahedron/2, 0, 0])
                 polyhedron(Dpoints,Dfaces);
         }
@@ -464,8 +468,109 @@ module TruncatedDodecahedron(edge=20, position="Face"){  // tD
         polyhedron(Dpoints,Dfaces);        
         } 
 }
+module TruncatedIcosahedron(edge=20, position="Face"){  // tI
+    // Constants
+    phi = (1+sqrt(5))/2; // Golden ratio = 1,618...
+    
+    // Invariants
+    diAngleIcosahedron = acos(-sqrt(5)/3); // dihedral angle of Icosahedron = 138,1897...
+    
+    // Relations
+    rInsHexagon = phi^2/(2*sqrt(3));
+    
+    // Variables
+    s = edge/2; //edge * (phi / 2); // * (2 / phi);
+    // define 3 rectangles on plane XY/XZ/YZ
+    p1 = (3 * phi) * s;
+    p2 = 1 * s;
+    // define 3 boxes. Every point in one octant
+    b1 = (2 * phi) * s;
+    b2 = (2 + phi) * s;
+    b3 = 1 * s;
+    // define 3 boxes. Every point in one octant
+    t1 = (2 * phi + 1) * s;
+    t2 = 2 * s;
+    t3 = (1 * phi) * s;
+    
+    
+    // Definition of points and faces V = 60 / F3 = 20 / F10 = 12
+    Dpoints = [
+    
+        // Build 3 rectangles on plane XY/XZ/YZ
+        [+p1, +p2,   0], [-p1, +p2,   0], [+p1, -p2,   0], [-p1, -p2,   0],    // XY
+        [+p2,   0, +p1], [+p2,   0, -p1], [-p2,   0, +p1], [-p2,   0, -p1],    // XZ
+        [0,   +p1, +p2], [0,   -p1, +p2], [0,   +p1, -p2], [0,   -p1, -p2],    // XZ
+        
+        // build 3 boxes. Every point in one octant
+        [+b1, +b2, +b3], [-b1, +b2, +b3], [+b1, -b2, +b3], [-b1, -b2, +b3],    // XYZ order by size - UP side
+        [+b1, +b2, -b3], [-b1, +b2, -b3], [+b1, -b2, -b3], [-b1, -b2, -b3],    // XYZ order by size - DOWN side
+        
+        [+b2, +b3, +b1], [+b2, +b3, -b1], [-b2, +b3, +b1], [-b2, +b3, -b1],    // YZX order by size - UP side
+        [+b2, -b3, +b1], [+b2, -b3, -b1], [-b2, -b3, +b1], [-b2, -b3, -b1],    // YZX order by size - Down side
+        
+        [+b3, +b1, +b2], [+b3, -b1, +b2], [+b3, +b1, -b2], [+b3, -b1, -b2],    // ZXY order by size - UP side
+        [-b3, +b1, +b2], [-b3, -b1, +b2], [-b3, +b1, -b2], [-b3, -b1, -b2],    // ZXY order by size - DOWN side
+        
+        // Build 8 triangles. One triangle per octant
+        [+t1, +t2, +t3], [-t1, +t2, +t3], [+t1, -t2, +t3], [-t1, -t2, +t3],    //   36  37  38  39
+        [+t1, +t2, -t3], [-t1, +t2, -t3], [+t1, -t2, -t3], [-t1, -t2, -t3],    //   40  41  42  43    
+        
+        [+t2, +t3, +t1], [+t2, +t3, -t1], [-t2, +t3, +t1], [-t2, +t3, -t1],    //   44  45  46  47
+        [+t2, -t3, +t1], [+t2, -t3, -t1], [-t2, -t3, +t1], [-t2, -t3, -t1],    //   48  49  50  51  
+        
+        [+t3, +t1, +t2], [+t3, -t1, +t2], [+t3, +t1, -t2], [+t3, -t1, -t2],    //   52  53  54  55  
+        [-t3, +t1, +t2], [-t3, -t1, +t2], [-t3, +t1, -t2], [-t3, -t1, -t2]     //   56  57  58  59  
+        
+        ];
+         
+    Dfaces = [
+    
+        //  + X
+        [  0, 40, 16, 12, 36], [  2, 38, 14, 18, 42],           // Pentagons
+        [  0, 36, 20, 24, 38,  2], [  0,  2, 42, 25, 21, 40],   // Hexagons       
+        // - X
+        [  1, 37, 13, 17, 41], [  3, 43, 19, 15, 39],           // Pentagons
+        [  1,  3, 39, 26, 22, 37], [  1, 41, 23, 27, 43,  3],   // Hexagons  
+        
+        // + Z
+        [  4, 48, 24, 20, 44], [  6, 46, 22, 26, 50],           // Pentagons
+        [  4,  44, 28, 32, 46, 6], [  4,  6, 50, 33, 29, 48],   // Hexagons  
+        // - Z
+        [  5, 45, 21, 25, 49], [  7, 51, 27, 23, 47],           // Pentagons
+        [  5,  7, 47, 34, 30, 45], [  5, 49, 31, 35, 51,  7],   // Hexagons  
+        
+        // + Y
+        [  8, 56, 32, 28, 52], [ 10, 54, 30, 34, 58],           // Pentagons
+        [  8, 52, 12, 16, 54, 10], [  8, 10, 58, 17, 13, 56],   // Hexagons  
+        
+        // - Y
+        [  9, 53, 29, 33, 57], [ 11, 59, 35, 31, 55],           // Pentagons
+        [  9, 11, 55, 18, 14, 53], [  9, 57, 15, 19, 59, 11],   // Hexagons  
+        
+        // Hexagons on corners
+        // UP
+        [ 12, 52, 28, 44, 20, 36], [ 13, 37, 22, 46, 32, 56],
+        [ 14, 38, 24, 48, 29, 53], [ 15, 57, 33, 50, 26, 39],
+        
+        // DOWN
+        [ 16, 40, 21, 45, 30, 54], [ 17, 41, 23, 47, 34, 58],
+        [ 31, 49, 25, 42, 18, 55], [ 27, 51, 35, 59, 19, 43]
+                
+        ];
+    
+    // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
+    if(position=="Face"){
+        translate([0,0,3*edge*rInsHexagon])
+            rotate([90-diAngleIcosahedron/2, 0, 0])
+                polyhedron(Dpoints,Dfaces);
+        }
+        
+    else if(position=="Center") {
+        polyhedron(Dpoints,Dfaces);        
+        } 
+}
 /* **RENDERING OF SOLIDS** */
-TruncatedTetrahedron(edge=truncatedTetrahedron_Edge, position=position);
+/*TruncatedTetrahedron(edge=truncatedTetrahedron_Edge, position=position);
 translate([matrix,0,0])
     Cuboctahedron(edge=cuboctahedron_Edge, position=position);
 translate([matrix*2,0,0])
@@ -479,8 +584,8 @@ translate([matrix*5,0,0])
 translate([matrix*6,0,0])
     SnubCube(edge=snubCube_Edge, position=position, chiral=chiral);
 translate([matrix*7,0,0])
-    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);
-translate([matrix*8,0,0])
+    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);*/
+translate([matrix*1,0,0])
     TruncatedDodecahedron(edge=truncatedDodecahedron_Edge, position=position);
-   
+TruncatedIcosahedron(edge=truncatedIcosahedron_Edge, position=position); 
     
