@@ -16,7 +16,7 @@ type = "Dodecahedron"; //["Tetrahedron", "Cube", "Octahedron", "Dodecahedron", "
 // Size of the solid
 size=40; //[10:100]
 // Parameter on which the solid is built
-accordingTo = "edge"; //["Edge", "height", "radioCircumscribed", "radioInscribed"]
+accordingTo = "edge"; //["edge", "height", "radioCircumscribed", "radioInscribed"]
 
 /* **MODULES** */
 module Tetrahedron(edge=20, position="Face"){ 

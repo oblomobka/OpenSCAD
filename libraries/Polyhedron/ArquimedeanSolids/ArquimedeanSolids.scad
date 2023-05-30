@@ -580,11 +580,11 @@ translate([matrix*3,0,0])
 translate([matrix*4,0,0])
     Rhombicuboctahedron(edge=rhombicuboctahedron_Edge, position=position);
 translate([matrix*5,0,0])
-    TruncatedCuboctahedron(edge=truncatedCuboctahedron_Edge, position=position);
-translate([matrix*6,0,0])
+    TruncatedCuboctahedron(edge=truncatedCuboctahedron_Edge, position=position);*/
+translate([matrix*2,0,0])
     SnubCube(edge=snubCube_Edge, position=position, chiral=chiral);
-translate([matrix*7,0,0])
-    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);*/
+translate([matrix*3,0,0])
+    Icosidodecahedron(edge=icosidodecahedron_Edge, position=position);
 translate([matrix*1,0,0])
     TruncatedDodecahedron(edge=truncatedDodecahedron_Edge, position=position);
 TruncatedIcosahedron(edge=truncatedIcosahedron_Edge, position=position); 
