@@ -4,12 +4,12 @@
 
 /* **CUSTOMIZER VARIABLES** */
 // Edge
-edge=20; //[10:100]
+edge = 30; //[10:100]
 // Center of the solid or stand over a face
 position = "Center"; //["Center", "Face"]
 
 /* **MODULES** */
-module Cube(edge=20, position="Face"){
+module Cube ( edge = 30, position = "Face"){
     
     // Invariants
     diAngleCube = 90; // dihedral angle of cube
@@ -24,8 +24,8 @@ module Cube(edge=20, position="Face"){
     
     // Definition of points and faces V = 8 / F = 6
     Cpoints = [
-        [+a, +a, +a], [-a, +a, +a], [+a, -a, +a], [-a, -a, +a],     // UP       [  0,  1,  2,  3]
-        [+a, +a, -a], [-a, +a, -a], [+a, -a, -a], [-a, -a, -a],     // DOWN     [  4,  5,  6,  7]
+        [ +a, +a, +a], [ -a, +a, +a], [ +a, -a, +a], [ -a, -a, +a],     // UP       [  0,  1,  2,  3]
+        [ +a, +a, -a], [ -a, +a, -a], [ +a, -a, -a], [ -a, -a, -a],     // DOWN     [  4,  5,  6,  7]
         ];
     
     Cfaces = [
@@ -35,13 +35,13 @@ module Cube(edge=20, position="Face"){
         ];
     
     // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
-    if(position == "Face"){
+    if ( position == "Face"){
         translate([ 0, 0, a])
             polyhedron( Cpoints, Cfaces);}
-    else if(position == "Center") {
-        polyhedron(Cpoints, Cfaces);} 
+    else if ( position == "Center") {
+        polyhedron( Cpoints, Cfaces);} 
 }
 
 
 /* **RENDERING OF SOLIDS** */ 
-Cube(edge=edge, position=position);
+Cube ( edge = edge, position = position);

@@ -4,12 +4,12 @@
 
 /* **CUSTOMIZER VARIABLES** */
 // Edge
-edge=20; //[10:100]
+edge = 30; //[10:100]
 // Center of the solid or stand over a face
 position = "Center"; //["Center", "Face"]
 
 /* **MODULES** */
-module DodecahedronRegular(edge=20, position="Face"){
+module DodecahedronRegular ( edge = 30, position = "Face"){
     
     // Constants
     phi = (1+sqrt(5))/2; // Golden ratio = 1,618...
@@ -32,12 +32,12 @@ module DodecahedronRegular(edge=20, position="Face"){
     // Definition of points and faces V = 20 / F = 12
     Dpoints = [
         // Build the cube inscrit in the Dodecahedron
-        [+a, +a, +a], [-a, +a, +a], [+a, -a, +a], [-a, -a, +a],     // UP       [  0,  1,  2,  3]
-        [+a, +a, -a], [-a, +a, -a], [+a, -a, -a], [-a, -a, -a],     // DOWN     [  4,  5,  6,  7]
+        [ +a, +a, +a], [ -a, +a, +a], [ +a, -a, +a], [ -a, -a, +a],     // UP       [  0,  1,  2,  3]
+        [ +a, +a, -a], [ -a, +a, -a], [ +a, -a, -a], [ -a, -a, -a],     // DOWN     [  4,  5,  6,  7]
         // Even permutations, every line draw a rectangule
-        [+b, +c, 0], [-b, +c, 0], [+b, -c, 0], [-b, -c, 0],         // XY       [  8,  9, 10, 11]
-        [+c, 0, +b], [+c, 0, -b], [-c, 0, +b], [-c, 0, -b],         // XZ       [ 12, 13, 14, 15]
-        [0, +b, +c], [0, -b, +c], [0, +b, -c], [0, -b, -c]          // YZ       [ 16, 17, 18, 19]
+        [ +b, +c, 0], [ -b, +c, 0], [ +b, -c, 0], [ -b, -c, 0],         // XY       [  8,  9, 10, 11]
+        [ +c, 0, +b], [ +c, 0, -b], [ -c, 0, +b], [ -c, 0, -b],         // XZ       [ 12, 13, 14, 15]
+        [ 0, +b, +c], [ 0, -b, +c], [ 0, +b, -c], [ 0, -b, -c]          // YZ       [ 16, 17, 18, 19]
         ];
          
     Dfaces = [
@@ -47,16 +47,15 @@ module DodecahedronRegular(edge=20, position="Face"){
         ];
     
     // Polyhedron stands on xy plane centered on the center of the face or centered on the center of polyhedron
-    if(position=="Face"){
-        translate([ 0, 0, edge*rInsDodecahedron])
-            rotate([90-diAngleDodecahedron/2, 0, 0])
-                    polyhedron(Dpoints, Dfaces);}
+    if ( position == "Face"){
+        translate ([ 0, 0, edge*rInsDodecahedron])
+            rotate ([ 90-diAngleDodecahedron/2, 0, 0])
+                    polyhedron ( Dpoints, Dfaces);}
                     
-    else if(position=="Center") {
-        polyhedron(Dpoints, Dfaces);
-            } 
-            
+    else if ( position == "Center") {
+        polyhedron ( Dpoints, Dfaces);
+            }         
         } 
 
 /* **RENDERING** */
-DodecahedronRegular(edge=edge, position=position);
+DodecahedronRegular ( edge = edge, position = position);
