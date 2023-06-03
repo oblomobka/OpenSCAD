@@ -35,7 +35,7 @@ module TruncatedCube ( edge = 30, position = "Face"){ //tC
     tCfaces = [
         // Build 8 triangles. One triangle per octant
         [  0,  2,  1], [  3,  4,  5], [  6,  7,  8], [ 10,  9, 11],     // UP
-        [ 12, 14, 13], [ 15, 17, 16], [ 18, 20, 19], [ 21, 22, 23],     // DOWN
+        [ 12, 13, 14], [ 15, 17, 16], [ 18, 20, 19], [ 21, 22, 23],     // DOWN
         // Octagons
         [  0,  1,  7,  6,  9, 10,  4,  3], [ 12, 15, 16, 22, 21, 18, 19, 13],       // parallel XY
         [  0,  3,  5, 17, 15, 12, 14,  2], [  6,  8, 20, 18, 21, 23, 11,  9],       // parallel XZ
