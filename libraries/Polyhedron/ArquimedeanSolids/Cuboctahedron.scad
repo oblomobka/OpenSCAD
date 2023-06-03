@@ -29,7 +29,7 @@ module Cuboctahedron ( edge = 30, position = "Face"){ //aC / aaT -> Conway notat
     
     aCfaces = [
         // Build 8 triangles. One triangle per octant
-        [  0,  4,  8], [  1,  5,  8], [  2,  9,  4], [  3,  5,  9],     // UP
+        [  0,  4,  8], [  1,  8,  5], [  2,  9,  4], [  3,  5,  9],     // UP
         [  0, 10,  6], [  1,  7, 10], [  3, 11,  7], [  2,  6, 11],     // DOWN
         // Squares
         [  9,  5,  8,  4], [  6, 10,  7, 11],       // parallel XY
